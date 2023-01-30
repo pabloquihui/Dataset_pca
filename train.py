@@ -82,8 +82,9 @@ lossfn = keras.losses.categorical_crossentropy
 metrics = [
             sm.metrics.IOUScore(threshold=0.5),
             sm.metrics.FScore(threshold=0.5),
-            tfa.metrics.F1Score(num_classes=5, threshold=None, average='macro'),
-            tfa.metrics.F1Score(num_classes=5, threshold=None, average='weighted')]
+            tfa.metrics.F1Score(num_classes=5, threshold=None, average='macro', name = 'f1_macro'),
+            tfa.metrics.F1Score(num_classes=5, threshold=None, average='weighted', name = 'f1_weighted'),
+            tfa.metrics.F1Score(num_classes=5, threshold=None, average='micro', name = 'f1_micro')]
 
 
 # UNET Montecarlo Dropout
