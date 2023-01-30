@@ -7,7 +7,7 @@ from keras.models import Model
 # from keras.layers.merge import concatenate
 from keras.layers.core import Lambda
 import keras.backend as K
-from UQ.fpa_module import keras_fpa as fpa
+from dp_models.fpa_module import keras_fpa as fpa
 import tensorflow as tf
 
 

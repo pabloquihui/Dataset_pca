@@ -3,7 +3,7 @@ from keras.models import Model
 from keras.layers import BatchNormalization, Conv2D, Activation, Dropout, AveragePooling2D, concatenate, GlobalAveragePooling2D, MaxPooling2D, Dense, Input
 from keras.regularizers import l2
 import keras.backend as K
-from UQ.mcdropout import MCDropout
+from dp_models.mcdropout import MCDropout
 #############################################################
 ##              Attention
 #############################################################
