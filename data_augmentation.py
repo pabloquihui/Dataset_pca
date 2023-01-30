@@ -42,12 +42,6 @@ def process(data):
     
     return img, msk
 
-
-
-counter = tf.data.experimental.Counter()
-temporary_ds = tf.data.Dataset.zip((train_set, (counter, counter)))
-
-
 @tf.function
 def random_bright(image_mask, seed):
     image, mask = image_mask
