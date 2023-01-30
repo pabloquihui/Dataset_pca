@@ -2,12 +2,9 @@
 import os
 from keras_unet_collection import models, utils
 import tensorflow as tf
-import cv2
 import keras
 import segmentation_models as sm
 import numpy as np
-import matplotlib.pyplot as plt
-import gdown
 import datetime
 from sklearn.model_selection import StratifiedKFold
 import pandas as pd
