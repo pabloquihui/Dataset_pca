@@ -27,15 +27,13 @@ IMG_H = 256
 IMG_CH = 1
 N_CLASSES = 5
 
-def process(data):  
+def preprocess(data):  
     img = data[0]
     msk = data[1]
     img = img/255
-
     msk = tf.squeeze(msk)
     msk = tf.cast(msk, tf.int32)
     msk = tf.one_hot(indices=msk, depth=N_CLASSES, axis=-1)
-
     img.set_shape([256,256,1])
     msk.set_shape([256,256,5])
     
