@@ -114,7 +114,7 @@ def random_central_crop(image_mask, seed):
 def augment(image_mask, seed):
     image, mask = image_mask
     # new_seed = tf.random.experimental.stateless_split(seed, num=1)[0][0]
-    image, mask = random_central_crop((image, mask), seed)
+    # image, mask = random_central_crop((image, mask), seed)
     image, mask = random_bright((image, mask), seed)
     image, mask = random_contrast((image, mask), seed)
     # image, mask = random_flip((image, mask), seed)
