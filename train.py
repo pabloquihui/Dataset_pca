@@ -28,15 +28,13 @@ main = os.getcwd()
 
 train = tf.data.Dataset.load(main+'/split/train_ds/')
 test = tf.data.Dataset.load(main+'/split/test_ds/')
-
 test_len = len(test)
 
 IMG_W = 256
 IMG_H = 256
 IMG_CH = 1
 N_CLASSES = 5
-AUTOTUNE = tf.data.experimental.AUTOTUNE
-BATCH_SIZE = 12
+BATCH_SIZE = 30
 
 def process(data):  
     img = data[0]
@@ -73,8 +71,8 @@ train_ds = (
 ## Model
 
 ### Parameters
-
-LR = 0.0001
+LR = float(input('Input a learning rate: '))
+# LR = 0.00001
 EPOCHS = 100
 optim = keras.optimizers.Adam(LR)
 lossfn = keras.losses.categorical_crossentropy
