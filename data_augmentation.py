@@ -105,8 +105,8 @@ def random_central_crop(image_mask, seed):
     central_fraction = tf.random.stateless_uniform([1], seed, minval=min_fraction, maxval=max_fraction)
     image = tf.image.central_crop(image, central_fraction[0])
     mask = tf.image.central_crop(mask, central_fraction[0])
-    image = tf.image.resize(image, [256,256, 1])
-    mask = tf.image.resize(mask, [256, 256, 5])
+    image = tf.image.resize(image, [256,256])
+    mask = tf.image.resize(mask, [256, 256])
     return image, mask
 
 # ### Augmentation
