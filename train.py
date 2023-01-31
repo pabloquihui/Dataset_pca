@@ -1,6 +1,6 @@
 
 import os
-from keras_unet_collection import models, utils
+# from keras_unet_collection import models, utils
 import tensorflow as tf
 import keras
 import segmentation_models as sm
@@ -70,10 +70,9 @@ train_ds = (
             .map(augment, num_parallel_calls=AUTOTUNE)
             .batch(BATCH_SIZE)
             )
+## Model
 
-# ## Model
-
-# ### Parameters
+### Parameters
 
 LR = 0.0001
 EPOCHS = 100
@@ -81,10 +80,10 @@ optim = keras.optimizers.Adam(LR)
 lossfn = keras.losses.categorical_crossentropy
 metrics = [
             sm.metrics.IOUScore(threshold=0.5),
-            sm.metrics.FScore(threshold=0.5),
-            tfa.metrics.F1Score(num_classes=5, threshold=None, average='macro', name = 'f1_macro'),
-            tfa.metrics.F1Score(num_classes=5, threshold=None, average='weighted', name = 'f1_weighted'),
-            tfa.metrics.F1Score(num_classes=5, threshold=None, average='micro', name = 'f1_micro')]
+            sm.metrics.FScore(threshold=0.5),]
+            # tfa.metrics.F1Score(num_classes=5, threshold=None, average='macro', name = 'f1_macro'),
+            # tfa.metrics.F1Score(num_classes=5, threshold=None, average='weighted', name = 'f1_weighted'),
+            # tfa.metrics.F1Score(num_classes=5, threshold=None, average='micro', name = 'f1_micro')]
 
 
 # UNET Montecarlo Dropout

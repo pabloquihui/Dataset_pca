@@ -14,7 +14,7 @@ import tensorflow as tf
 import fnmatch
 import matplotlib.pyplot as plt 
 import tensorflow_addons as tfa
-
+import math
 
 # ## Images of the dataset
 
@@ -30,7 +30,6 @@ N_CLASSES = 5
 def process(data):  
     img = data[0]
     msk = data[1]
-    # img = tf.math.l2_normalize(img, axis=0)
     img = img/255
 
     msk = tf.squeeze(msk)
@@ -68,7 +67,7 @@ def random_flip(image_mask, seed):
 def random_rotation(image_mask, seed):
     image, mask = image_mask
     # new_seed = tf.random.experimental.stateless_split(seed, num=1)[0, :]
-    num_samples = (tf.shape(image)[0])
+    num_samples = int(tf.shape(image)[0])
     degrees = tf.random.stateless_uniform(
         shape=(num_samples,), seed=seed, minval=0, maxval=180
     )
@@ -78,9 +77,20 @@ def random_rotation(image_mask, seed):
     return rotated_images, rotated_masks
 
 @tf.function
+def random_rot(image_mask, seed):
+    ...
+    image, mask = image_mask
+    upper = 180 * (math.pi/180.0) # degrees -> radian
+    lower = 0 * (math.pi/180.0)
+    rand_degree = tf.random.stateless_uniform([1], minval= lower, maxval=upper, seed=seed)
+    image = tfa.image.rotate(image , rand_degree)
+    mask = tfa.image.rotate(mask , rand_degree)
+    # img is a Tensor
+    return image, mask
+
+@tf.function
 def add_noise(image_mask, seed):
     image, mask = image_mask
-    print(tf.shape(image))
     common_type = tf.float32 # Make noise and image of the same type
     random_std = tf.random.stateless_uniform([1], seed=seed, minval=0.0, maxval=0.01)
     gnoise = tf.random.stateless_normal(shape=tf.shape(image), mean=0.0, stddev=random_std, dtype=common_type, seed = seed)
@@ -108,8 +118,9 @@ def augment(image_mask, seed):
     image, mask = random_bright((image, mask), seed)
     image, mask = random_contrast((image, mask), seed)
     image, mask = random_flip((image, mask), seed)
-    image, mask = random_rotation((image, mask), seed)
+    image, mask = random_rot((image, mask), seed)
     image, mask = add_noise((image, mask), seed)
+    
     return image, mask
 
 
