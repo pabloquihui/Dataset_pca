@@ -146,7 +146,7 @@ model.save(f'{folder}/{name}.h5')
 
 
 
-if input('Do you want to evaluate?') == 'Yes':
+if input('Do you want to evaluate?') == 'yes':
 
     import json
     from tensorflow.keras.models import load_model, model_from_json

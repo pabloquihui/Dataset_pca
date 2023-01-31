@@ -44,13 +44,13 @@ def process(data):
 @tf.function
 def random_bright(image_mask, seed):
     image, mask = image_mask
-    image = tf.image.stateless_random_brightness(image, max_delta=0.5, seed=seed)
+    image = tf.image.stateless_random_brightness(image, max_delta=0.6, seed=seed)
     return image, mask
 
 @tf.function
 def random_contrast(image_mask, seed):
     image, mask = image_mask
-    image = tf.image.stateless_random_contrast(image, lower=0.5, upper=1, seed=seed)
+    image = tf.image.stateless_random_contrast(image, lower=0.3, upper=1, seed=seed)
     return image, mask
 
 @tf.function
@@ -117,7 +117,7 @@ def augment(image_mask, seed):
     # image, mask = random_central_crop((image, mask), seed)
     image, mask = random_bright((image, mask), seed)
     image, mask = random_contrast((image, mask), seed)
-    # image, mask = random_flip((image, mask), seed)
+    image, mask = random_flip((image, mask), seed)
     # image, mask = random_rot((image, mask), seed)
     image, mask = add_noise((image, mask), seed)
 
