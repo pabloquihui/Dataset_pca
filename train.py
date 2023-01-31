@@ -92,20 +92,19 @@ metrics = [
 
 # In[ ]:
 
-
+model_str = int(input('Model: 1. UNet, 2. Attn UNet: '))
+if model_str == 1:
 # UNET
-# model = unet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1)
-# model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-# name = 'unet_model'
-# folder = 'UNET'
-
-
-
+    model = unet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1)
+    model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
+    name = 'unet_model'
+    folder = 'UNET'
+elif model_str == 2:
 # ATTN UNET 
-model = att_unet_org(img_h=256, img_w=256, img_ch=1, n_label=5, data_format='channels_last')
-model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-name = 'attn_unet_model'
-folder = 'ATTN'
+    model = att_unet_org(img_h=256, img_w=256, img_ch=1, n_label=5, data_format='channels_last')
+    model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
+    name = 'attn_unet_model'
+    folder = 'ATTN'
 
 
 model.summary()
