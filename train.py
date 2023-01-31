@@ -19,7 +19,8 @@ from dp_models.att_fpa import att_unet
 import tensorflow_addons as tfa
 from data_augmentation import augment
 # Notifications config:
-url_notif = r'https://api.pushcut.io/nijldnK5Ud5uQXRJI0v_G/notifications/Training%20ended'
+url_notif = 'https://api.pushcut.io/nijldnK5Ud5uQXRJI0v_G/notifications/Training%20ended'
+
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 IMG_W = 256
 IMG_H = 256
@@ -36,7 +37,7 @@ test_len = len(test)
 def process(data):  
     img = data[0]
     msk = data[1]
-    img = img/255
+    # img = img/255
 
     msk = tf.squeeze(msk)
     msk = tf.cast(msk, tf.int32)
@@ -145,7 +146,7 @@ model.save(f'{folder}/{name}.h5')
 
 
 
-if input('Do you want to evaluate?') == True:
+if input('Do you want to evaluate?') == 'Yes':
 
     import json
     from tensorflow.keras.models import load_model, model_from_json
