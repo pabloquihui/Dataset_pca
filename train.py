@@ -18,6 +18,7 @@ from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 from dp_models.att_fpa import att_unet
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
+import random
 # Notifications config:
 url_notif = 'https://api.pushcut.io/nijldnK5Ud5uQXRJI0v_G/notifications/Training%20ended'
 
@@ -63,15 +64,15 @@ for i in range(k):
     val_ds = val_ds.cache()
     val_ds = val_ds.batch(BATCH_SIZE)
 
-    # counter = tf.data.experimental.Counter()
-    # training = tf.data.Dataset.zip((train_ds, (counter, counter)))
-    # train_ds = (
-    #             training
-    #             .shuffle(100)
-    #             .map(augment, num_parallel_calls=AUTOTUNE)
-    #             .batch(BATCH_SIZE)
-    #             )
-    train_ds = train_ds.shuffle(100).batch(BATCH_SIZE)
+    counter = tf.data.experimental.Counter()
+    training = tf.data.Dataset.zip((train_ds, (counter, counter)))
+    train_ds = (
+                training
+                .shuffle(100)
+                .map(augment, num_parallel_calls=AUTOTUNE)
+                .batch(BATCH_SIZE)
+                )
+    # train_ds = train_ds.shuffle(100).batch(BATCH_SIZE)
     # UNET
     model = unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
     model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
