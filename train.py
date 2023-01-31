@@ -59,7 +59,7 @@ for i in range(k):
                             )
 
     train_ds = train_ds.cache()
-    train_ds = train_ds.batch(BATCH_SIZE)
+    
     val_ds = val_ds.cache()
     val_ds = val_ds.batch(BATCH_SIZE)
 
@@ -72,6 +72,8 @@ for i in range(k):
     #             .batch(BATCH_SIZE)
     #             )
     train_ds = train_ds.shuffle(100).batch(BATCH_SIZE)
+    for i, j in train_ds.take(1):
+            print(tf.shape(i))
     # UNET
     model = unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
     model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
