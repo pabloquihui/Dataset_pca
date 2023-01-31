@@ -59,12 +59,13 @@ test = test.batch(BATCH_SIZE)
 counter = tf.data.experimental.Counter()
 training = tf.data.Dataset.zip((train, (counter, counter)))
 
-train_ds = (
-            training
-            .shuffle(1000)
-            .map(augment, num_parallel_calls=AUTOTUNE)
-            .batch(BATCH_SIZE)
-            )
+# train_ds = (
+#             training
+#             .shuffle(100)
+#             .map(augment, num_parallel_calls=AUTOTUNE)
+#             .batch(BATCH_SIZE)
+#             )
+train_ds = train.shuffle(100).batch(BATCH_SIZE)
 ## Model
 
 ### Parameters
