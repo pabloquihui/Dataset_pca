@@ -120,7 +120,7 @@ if not os.path.exists(folder):
 
 # Callbacks
 es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
-                                   patience=10, restore_best_weights=True)
+                                   patience=20, restore_best_weights=True)
 log_dir ="logs/fit/" + name+ '_' + datetime.datetime.now().strftime(r"%Y%m%d-%H%M%S")
 tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 callbacks= [es, tensorboard_callback, keras.callbacks.ModelCheckpoint(
