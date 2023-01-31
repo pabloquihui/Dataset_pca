@@ -50,7 +50,7 @@ def random_bright(image_mask, seed):
 @tf.function
 def random_contrast(image_mask, seed):
     image, mask = image_mask
-    image = tf.image.stateless_random_contrast(image, lower=0.4, upper=1, seed=seed)
+    image = tf.image.stateless_random_contrast(image, lower=0.5, upper=1, seed=seed)
     return image, mask
 
 @tf.function
@@ -115,11 +115,14 @@ def augment(image_mask, seed):
     image, mask = image_mask
     # new_seed = tf.random.experimental.stateless_split(seed, num=1)[0][0]
     # image, mask = random_central_crop((image, mask), seed)
-    image, mask = random_bright((image, mask), seed)
-    image, mask = random_contrast((image, mask), seed)
+    if input('Random Brightness?(yes or no) ') == 'yes':
+        image, mask = random_bright((image, mask), seed)
+    if input('Random Contrast?(yes or no) ') == 'yes':
+        image, mask = random_contrast((image, mask), seed)
     # image, mask = random_flip((image, mask), seed)
     # image, mask = random_rot((image, mask), seed)
-    image, mask = add_noise((image, mask), seed)
+    if input('Random Noise?(yes or no) ') == 'yes':
+        image, mask = add_noise((image, mask), seed)
 
     # image = image/255
     

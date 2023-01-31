@@ -60,13 +60,16 @@ test = test.batch(BATCH_SIZE)
 counter = tf.data.experimental.Counter()
 training = tf.data.Dataset.zip((train, (counter, counter)))
 
-train_ds = (
-            training
-            .shuffle(100)
-            .map(augment, num_parallel_calls=AUTOTUNE)
-            .batch(BATCH_SIZE)
-            )
-# train_ds = train.shuffle(100).batch(BATCH_SIZE)
+
+if input('Data Augmentation?(yes or no) ') == 'yes':
+    train_ds = (
+                training
+                .shuffle(100)
+                .map(augment, num_parallel_calls=AUTOTUNE)
+                .batch(BATCH_SIZE)
+                )
+else:
+    train_ds = train.shuffle(100).batch(BATCH_SIZE)
 ## Model
 
 ### Parameters
@@ -146,24 +149,24 @@ model.save(f'{folder}/{name}.h5')
 
 
 
-if input('Do you want to evaluate?') == 'yes':
+# if input('Do you want to evaluate?') == 'yes':
 
-    import json
-    from tensorflow.keras.models import load_model, model_from_json
-    import segmentation_models as sm
-    # from mcdropout import MCDropout
-    from tensorflow.keras.layers import Dropout
-    name = 'unet_model'
-    folder = 'unet/'
-    with open(f'{folder}/{name}.json', 'r') as json_file:
-        model = model_from_json(json_file.read(), custom_objects={"iou_score": sm.metrics.IOUScore(threshold=0.5),
-                                                            "f1-score": sm.metrics.FScore(threshold=0.5), 
-                                                            })
+#     import json
+#     from tensorflow.keras.models import load_model, model_from_json
+#     import segmentation_models as sm
+#     # from mcdropout import MCDropout
+#     from tensorflow.keras.layers import Dropout
+#     name = 'unet_model'
+#     folder = 'unet/'
+#     with open(f'{folder}/{name}.json', 'r') as json_file:
+#         model = model_from_json(json_file.read(), custom_objects={"iou_score": sm.metrics.IOUScore(threshold=0.5),
+#                                                             "f1-score": sm.metrics.FScore(threshold=0.5), 
+#                                                             })
         
 
 
-    model.load_weights(f'{folder}/{name}.h5')
-    model.compile(optim, lossfn, metrics)
+#     model.load_weights(f'{folder}/{name}.h5')
+#     model.compile(optim, lossfn, metrics)
 
 
     # ## Evaluation
@@ -171,5 +174,5 @@ if input('Do you want to evaluate?') == 'yes':
     # In[23]:
 
 
-    result = model.evaluate(test)
+    # result = model.evaluate(test)
 
