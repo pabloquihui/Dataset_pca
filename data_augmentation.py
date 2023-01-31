@@ -118,8 +118,10 @@ def augment(image_mask, seed):
     image, mask = random_bright((image, mask), seed)
     image, mask = random_contrast((image, mask), seed)
     # image, mask = random_flip((image, mask), seed)
-    # image, mask = random_rot((image, mask), seed)
+    image, mask = random_rot((image, mask), seed)
     # image, mask = add_noise((image, mask), seed)
+
+    image = image/255
     
     return image, mask
 
