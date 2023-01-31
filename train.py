@@ -72,8 +72,6 @@ for i in range(k):
     #             .batch(BATCH_SIZE)
     #             )
     train_ds = train_ds.shuffle(100).batch(BATCH_SIZE)
-    for i, j in train_ds.take(1):
-            print(tf.shape(i))
     # UNET
     model = unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
     model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
@@ -110,7 +108,7 @@ for i in range(k):
         
     model.save(f'{folder}/{name}_{k}fold.h5')
 scores_final = np.array(scores_final)
-np.save(f'{folder}/{name}_{k}')
+np.save(f'{folder}/{name}_{k}', scores_final)
 
 ### Send notification to iPhone ###
 notif = requests.post(url=url_notif)
