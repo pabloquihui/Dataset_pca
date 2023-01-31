@@ -120,7 +120,7 @@ def augment(image_mask, seed):
     # image, mask = random_flip((image, mask), seed)
     # image, mask = random_rot((image, mask), seed)
     # if input('Random Noise?(yes or no) ') == 'yes':
-    image, mask = add_noise((image, mask), seed)
+    # image, mask = add_noise((image, mask), seed)
 
     # image = image/255
     
