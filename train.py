@@ -163,7 +163,7 @@ if input('Do you want to evaluate?') == 'yes':
 
 
     model.load_weights(f'{folder}/{name}.h5')
-    model.compile(optim, loss, metrics)
+    model.compile(optim, lossfn, metrics)
 
 
     # ## Evaluation
