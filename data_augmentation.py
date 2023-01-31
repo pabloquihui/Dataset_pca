@@ -105,8 +105,8 @@ def random_central_crop(image_mask, seed):
     central_fraction = tf.random.stateless_uniform([1], seed, minval=min_fraction, maxval=max_fraction)
     image = tf.image.central_crop(image, central_fraction[0])
     mask = tf.image.central_crop(mask, central_fraction[0])
-    image = tf.image.resize(image, [256,256])
-    mask = tf.image.resize(mask, [256, 256])
+    image = tf.image.resize(image, [256,256, 1])
+    mask = tf.image.resize(mask, [256, 256, 5])
     return image, mask
 
 # ### Augmentation
@@ -114,10 +114,10 @@ def random_central_crop(image_mask, seed):
 def augment(image_mask, seed):
     image, mask = image_mask
     # new_seed = tf.random.experimental.stateless_split(seed, num=1)[0][0]
-    # image, mask = random_central_crop((image, mask), seed)
+    image, mask = random_central_crop((image, mask), seed)
     image, mask = random_bright((image, mask), seed)
     image, mask = random_contrast((image, mask), seed)
-    image, mask = random_flip((image, mask), seed)
+    # image, mask = random_flip((image, mask), seed)
     # image, mask = random_rot((image, mask), seed)
     image, mask = add_noise((image, mask), seed)
 
