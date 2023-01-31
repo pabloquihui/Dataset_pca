@@ -37,7 +37,7 @@ test_len = len(test)
 def process(data):  
     img = data[0]
     msk = data[1]
-    # img = img/255
+    img = img/255
 
     msk = tf.squeeze(msk)
     msk = tf.cast(msk, tf.int32)
@@ -70,8 +70,8 @@ train_ds = (
 ## Model
 
 ### Parameters
-LR = float(input('Input a learning rate: '))
-# LR = 0.0001
+# LR = float(input('Input a learning rate: '))
+LR = 0.0001
 EPOCHS = 300
 optim = keras.optimizers.Adam(LR)
 lossfn = keras.losses.categorical_crossentropy
