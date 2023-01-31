@@ -50,7 +50,7 @@ test = test.batch(BATCH_SIZE)
 scores_final = []
 k = 5
 for i in range(k):
-    print(f'--------{i} Fold ----------')
+    print(f'--------{i+1} Fold ----------')
     train_ds, val_ds = tf.keras.utils.split_dataset(
                             train,
                             left_size=0.8,
@@ -63,14 +63,15 @@ for i in range(k):
     val_ds = val_ds.cache()
     val_ds = val_ds.batch(BATCH_SIZE)
 
-    counter = tf.data.experimental.Counter()
-    training = tf.data.Dataset.zip((train_ds, (counter, counter)))
-    train_ds = (
-                training
-                .shuffle(100)
-                .map(augment, num_parallel_calls=AUTOTUNE)
-                .batch(BATCH_SIZE)
-                )
+    # counter = tf.data.experimental.Counter()
+    # training = tf.data.Dataset.zip((train_ds, (counter, counter)))
+    # train_ds = (
+    #             training
+    #             .shuffle(100)
+    #             .map(augment, num_parallel_calls=AUTOTUNE)
+    #             .batch(BATCH_SIZE)
+    #             )
+    train_ds = train_ds.shuffle(100).batch(BATCH_SIZE)
     # UNET
     model = unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
     model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
