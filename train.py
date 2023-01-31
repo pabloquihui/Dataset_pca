@@ -21,20 +21,17 @@ from data_augmentation import augment
 # Notifications config:
 url_notif = r'https://api.pushcut.io/nijldnK5Ud5uQXRJI0v_G/notifications/Training%20ended'
 AUTOTUNE = tf.data.experimental.AUTOTUNE
-
-
-# ## Dataset
-main = os.getcwd()
-
-train = tf.data.Dataset.load(main+'/split/train_ds/')
-test = tf.data.Dataset.load(main+'/split/test_ds/')
-test_len = len(test)
-
 IMG_W = 256
 IMG_H = 256
 IMG_CH = 1
 N_CLASSES = 5
-BATCH_SIZE = 30
+BATCH_SIZE = 6
+
+# ## Dataset
+main = os.getcwd()
+train = tf.data.Dataset.load(main+'/split/train_ds/')
+test = tf.data.Dataset.load(main+'/split/test_ds/')
+test_len = len(test)
 
 def process(data):  
     img = data[0]
@@ -72,8 +69,8 @@ train_ds = (
 
 ### Parameters
 LR = float(input('Input a learning rate: '))
-# LR = 0.00001
-EPOCHS = 100
+# LR = 0.0001
+EPOCHS = 300
 optim = keras.optimizers.Adam(LR)
 lossfn = keras.losses.categorical_crossentropy
 metrics = [
@@ -97,18 +94,18 @@ metrics = [
 
 
 # UNET
-model = unet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1)
-model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-name = 'unet_model'
-folder = 'UNET'
+# model = unet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1)
+# model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
+# name = 'unet_model'
+# folder = 'UNET'
 
 
 
 # ATTN UNET 
-# model = att_unet_org(img_h=256, img_w=256, img_ch=1, n_label=5, data_format='channels_last')
-# model.compile(loss=keras.losses.categorical_crossentropy, optimizer=optim, metrics = metrics)
-# name = 'attn_unet_model'
-# folder = 'MC_COMPARISON/ATTN'
+model = att_unet_org(img_h=256, img_w=256, img_ch=1, n_label=5, data_format='channels_last')
+model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
+name = 'attn_unet_model'
+folder = 'ATTN'
 
 
 model.summary()
