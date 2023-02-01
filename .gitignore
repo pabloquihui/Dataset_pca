@@ -1,2 +1,4 @@
 /dataset
 /Patients
+*.pyc
+/logs
