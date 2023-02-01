@@ -53,7 +53,7 @@ test = test.batch(BATCH_SIZE)
 scores_final = []
 k = 5
 for i in range(k):
-    run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation')
+    run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'UNET_{i+1}fold')
     tf.keras.backend.clear_session()
     print(f'--------{i+1} Fold ----------')
     train_ds, val_ds = tf.keras.utils.split_dataset(
@@ -119,7 +119,7 @@ for i in range(k):
     json_model = model.to_json()#save the model architecture to JSON file
     with open(f'{folder}/{name}_{i+1}fold.json', 'w') as json_file:
         json_file.write(json_model)
-    model.save(f'{folder}/{name}_{i+1}.h5')
+    model.save_weights(f'{folder}/{name}_{i+1}.h5')
     run.finish()
 scores_final = np.array(scores_final)
 np.save(f'{folder}/{name}_{k}', scores_final)
