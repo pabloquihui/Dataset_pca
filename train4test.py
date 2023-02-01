@@ -98,10 +98,8 @@ def main(train):
                                     save_model=False,
                                     save_weights_only=False
                                     )
-    es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
-                                    patience=20, restore_best_weights=True)
-
-    callbacks= [es, wandb_callback]
+    
+    callbacks= [wandb_callback]
 
     #Training
     history = model.fit(
