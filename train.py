@@ -16,6 +16,7 @@ from dp_models.unet_MC import multi_unet_model as mc_unet_model
 from dp_models.unet import unet_model
 from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 from dp_models.att_fpa import att_unet
+from dp_models.att_unet import attention_unet_model
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
 import wandb
@@ -98,7 +99,8 @@ def main(train, parameters):
         # folder = 'UNET'
 
         # ATTN UNET 
-        model = att_unet_org(img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH, n_label=N_CLASSES, data_format='channels_last')
+        # model = att_unet_org(img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH, n_label=N_CLASSES, data_format='channels_last')
+        model = attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
         name = 'attn_unet_model'
         folder = 'ATTN_UNET'
