@@ -1,6 +1,9 @@
+#########################################
+### Script for K-Fold Validation using a Validation Set 
+### 
+########################################
 
 import os
-# from keras_unet_collection import models, utils
 import tensorflow as tf
 import keras
 import segmentation_models as sm
