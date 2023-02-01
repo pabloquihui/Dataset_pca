@@ -55,7 +55,7 @@ def main(train):
     tf.keras.backend.clear_session()
 
     LR = 0.0001
-    EPOCHS = 155
+    EPOCHS = 140
     optim = keras.optimizers.Adam(LR)
     lossfn = keras.losses.categorical_crossentropy
     metrics = [
