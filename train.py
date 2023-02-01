@@ -35,10 +35,10 @@ parameters = np.array([IMG_W, IMG_H, IMG_CH, N_CLASSES, AUTOTUNE])
 
 # ## Dataset
 main = os.getcwd()
-train = tf.data.Dataset.load(main+'/split/train_ds/')
+train = tf.data.Dataset.load(main+'/split_tensor/train_ds/')
 train = train.map(preprocess, num_parallel_calls=AUTOTUNE)
 
-# test = tf.data.Dataset.load(main+'/split/test_ds/')
+# test = tf.data.Dataset.load(main+'/split_tensor/test_ds/')
 # test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
 # test = test.cache()
 # test = test.batch(BATCH_SIZE)
