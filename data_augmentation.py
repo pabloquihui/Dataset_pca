@@ -114,9 +114,9 @@ def augment(image_mask, seed):
     # new_seed = tf.random.experimental.stateless_split(seed, num=1)[0][0]
     # image, mask = random_central_crop((image, mask), seed)
     # if input('Random Brightness?(yes or no) ') == 'yes':
-    image, mask = random_bright((image, mask), seed)
+    # image, mask = random_bright((image, mask), seed)
     # if input('Random Contrast?(yes or no) ') == 'yes':
-    # image, mask = random_contrast((image, mask), seed)
+    image, mask = random_contrast((image, mask), seed)
     # image, mask = random_flip((image, mask), seed)
     # image, mask = random_rot((image, mask), seed)
     # if input('Random Noise?(yes or no) ') == 'yes':
