@@ -42,8 +42,10 @@ train = train.map(preprocess, num_parallel_calls=AUTOTUNE)
 # test = test.cache()
 # test = test.batch(BATCH_SIZE)
 
-
-
+if input('Do you want to apply data augmentation?(yes or no) ') == 'yes':
+    aug = True
+else:
+    aug = False
 
 def main(train, parameters):
     IMG_W = parameters[0]
@@ -78,7 +80,7 @@ def main(train, parameters):
         val_ds = val_ds.cache()
         val_ds = val_ds.batch(BATCH_SIZE)
 
-        if input('Do you want to apply data augmentation?(yes or no) ') == 'yes':
+        if aug == True:
             counter = tf.data.experimental.Counter()
             train_ds = tf.data.Dataset.zip((train_ds, (counter, counter)))
             train_ds = (
