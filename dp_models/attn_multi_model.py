@@ -185,7 +185,7 @@ def att_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     inputs = Input((img_h,img_w, img_ch))
     x = inputs
     depth = 4
-    features = 64
+    features = 16
     skips = []
     for i in range(depth):
         x = Conv2D(features, (3, 3), activation='relu', padding='same', data_format=data_format)(x)
@@ -219,7 +219,7 @@ def mc_att_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     inputs = Input((img_h,img_w, img_ch))
     x = inputs
     depth = 4
-    features = 64
+    features = 16
     skips = []
     for i in range(depth):
         x = Conv2D(features, (3, 3), activation='relu', padding='same', data_format=data_format)(x)
@@ -255,7 +255,7 @@ def r2_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     inputs = Input((img_h,img_w, img_ch))
     x = inputs
     depth = 4
-    features = 64
+    features = 16
     skips = []
     for i in range(depth):
         x = rec_res_block(x, features, data_format=data_format)
@@ -282,7 +282,7 @@ def att_r2_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     inputs = Input((img_h,img_w, img_ch))
     x = inputs
     depth = 4
-    features = 64
+    features = 16
     skips = []
     for i in range(depth):
         x = rec_res_block(x, features, data_format=data_format)

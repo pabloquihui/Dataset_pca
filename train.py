@@ -44,9 +44,10 @@ train = train.map(preprocess, num_parallel_calls=AUTOTUNE)
 # test = test.batch(BATCH_SIZE)
 
 if input('Do you want to apply data augmentation?(yes or no) ') == 'yes':
-    aug = True
+    aug = 'Aug'
+
 else:
-    aug = False
+    aug = 'Orig'
 
 def main(train, parameters):
     IMG_W = parameters[0]
@@ -66,7 +67,7 @@ def main(train, parameters):
     scores_final = []
     k = 5
     for i in range(k):
-        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'ATTUNET_ORIG_new_{i+1}fold')
+        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'ATTUNET_{aug}_{i+1}fold')
         tf.keras.backend.clear_session()
         print(f'--------{i+1} Fold ----------')
         train_ds, val_ds = tf.keras.utils.split_dataset(
@@ -81,7 +82,7 @@ def main(train, parameters):
         val_ds = val_ds.cache()
         val_ds = val_ds.batch(BATCH_SIZE)
 
-        if aug == True:
+        if aug == 'Aug':
             counter = tf.data.experimental.Counter()
             train_ds = tf.data.Dataset.zip((train_ds, (counter, counter)))
             train_ds = (
