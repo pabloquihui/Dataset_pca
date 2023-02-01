@@ -30,7 +30,7 @@ IMG_CH = 1
 N_CLASSES = 5
 
 
-parameters = np.array(IMG_W, IMG_H, IMG_CH, N_CLASSES, AUTOTUNE)
+parameters = np.array([IMG_W, IMG_H, IMG_CH, N_CLASSES, AUTOTUNE])
 
 # ## Dataset
 main = os.getcwd()
