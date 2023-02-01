@@ -63,7 +63,7 @@ def main(train, parameters):
     scores_final = []
     k = 5
     for i in range(k):
-        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'UNET_orig_{i+1}fold')
+        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'ATTUNET_aug4_{i+1}fold')
         tf.keras.backend.clear_session()
         print(f'--------{i+1} Fold ----------')
         train_ds, val_ds = tf.keras.utils.split_dataset(
@@ -80,18 +80,25 @@ def main(train, parameters):
 
         counter = tf.data.experimental.Counter()
         train_ds = tf.data.Dataset.zip((train_ds, (counter, counter)))
-        # train_ds = (
-        #             train_ds
-        #             .shuffle(1000)
-        #             .map(augment, num_parallel_calls=AUTOTUNE)
-        #             .batch(BATCH_SIZE)
-        #             )
-        train_ds = train_ds.shuffle(100).batch(BATCH_SIZE)
+        train_ds = (
+                    train_ds
+                    .shuffle(1000)
+                    .map(augment, num_parallel_calls=AUTOTUNE)
+                    .batch(BATCH_SIZE)
+                    )
+        # train_ds = train_ds.shuffle(100).batch(BATCH_SIZE)
         # UNET
-        model = unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        # model = unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        # model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
+        # name = 'unet_model'
+        # folder = 'UNET'
+
+        # ATTN UNET 
+        model = att_unet_org(img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH, n_label=N_CLASSES, data_format='channels_last')
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-        name = 'unet_model'
-        folder = 'UNET'
+        name = 'attn_unet_model'
+        folder = 'ATTN_UNET'
+
         if not os.path.exists(folder):
             os.makedirs(folder)
 
