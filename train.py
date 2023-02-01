@@ -18,9 +18,11 @@ from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 from dp_models.att_fpa import att_unet
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
-import random
+import wandb
+from wandb.keras import WandbCallback
 # Notifications config:
 url_notif = 'https://api.pushcut.io/nijldnK5Ud5uQXRJI0v_G/notifications/Training%20ended'
+
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 IMG_W = 256
@@ -51,6 +53,8 @@ test = test.batch(BATCH_SIZE)
 scores_final = []
 k = 5
 for i in range(k):
+    run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation')
+    tf.keras.backend.clear_session()
     print(f'--------{i+1} Fold ----------')
     train_ds, val_ds = tf.keras.utils.split_dataset(
                             train,
@@ -65,10 +69,10 @@ for i in range(k):
     val_ds = val_ds.batch(BATCH_SIZE)
 
     counter = tf.data.experimental.Counter()
-    training = tf.data.Dataset.zip((train_ds, (counter, counter)))
+    train_ds = tf.data.Dataset.zip((train_ds, (counter, counter)))
     train_ds = (
-                training
-                .shuffle(100)
+                train_ds
+                .shuffle(1000)
                 .map(augment, num_parallel_calls=AUTOTUNE)
                 .batch(BATCH_SIZE)
                 )
@@ -82,13 +86,22 @@ for i in range(k):
         os.makedirs(folder)
 
     # Callbacks
+    wandb_callback = WandbCallback(
+                                    monitor='val_loss',
+                                    mode='min',
+                                    save_model=False,
+                                    save_weights_only=False
+                                    )
     es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
                                     patience=20, restore_best_weights=True)
-    log_dir ="logs/fit/" + name+ '_' + datetime.datetime.now().strftime(r"%Y%m%d-%H%M%S")
-    tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-    callbacks= [es, tensorboard_callback, keras.callbacks.ModelCheckpoint(
-                        filepath=(f'{folder}/{name}_best.hdf5'),
-                        monitor='val_loss', save_best_only=True, mode='min')]
+
+    # log_dir ="logs/fit/" + name+ '_' + datetime.datetime.now().strftime(r"%Y%m%d-%H%M%S")
+    # tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    # checkpoint = keras.callbacks.ModelCheckpoint(
+    #                     filepath=(f'{folder}/{name}_{i+1}.hdf5'),
+    #                     monitor='val_loss', save_best_only=True, mode='min')
+
+    callbacks= [es, wandb_callback]
 
 
     #Training
@@ -106,8 +119,8 @@ for i in range(k):
     json_model = model.to_json()#save the model architecture to JSON file
     with open(f'{folder}/{name}_{i+1}fold.json', 'w') as json_file:
         json_file.write(json_model)
-        
-    model.save(f'{folder}/{name}_{i+1}fold.h5')
+    model.save(f'{folder}/{name}_{i+1}.h5')
+    run.finish()
 scores_final = np.array(scores_final)
 np.save(f'{folder}/{name}_{k}', scores_final)
 
