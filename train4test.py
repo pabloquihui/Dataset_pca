@@ -26,6 +26,7 @@ import wandb
 from wandb.keras import WandbCallback
 # Notifications config:
 url_notif = 'https://api.pushcut.io/nijldnK5Ud5uQXRJI0v_G/notifications/Training%20ended'
+tf.random.set_seed(580)
 tf.config.experimental.enable_op_determinism()
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
