@@ -36,6 +36,7 @@ def get_model(model):
             model = model_from_json(json_file.read(), custom_objects={"iou_score": sm.metrics.IOUScore(threshold=0.5),
                                                                 "f1-score": sm.metrics.FScore(threshold=0.5), 
                                                                 "MCDropout": MCDropout(Dropout)})
+    return model
 
 def get_eval_pred(model_obj, model_name):
     losses = []
