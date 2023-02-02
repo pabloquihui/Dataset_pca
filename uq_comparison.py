@@ -21,9 +21,13 @@ test = test.cache()
 test = test.batch(6)
 
 folder = 'Uncertainty_comparison/models_files'
-
+already_done = []
 for file in tqdm(os.listdir(folder)):
     model_name = os.path.splitext(file)[0]
+    if model_name in already_done:
+        next
+    else:
+        already_done.append(model_name)
     with open(f'{folder}/{model_name}.json', 'r') as json_file:
         model = model_from_json(json_file.read(), custom_objects={"iou_score": sm.metrics.IOUScore(threshold=0.5),
                                                             "f1-score": sm.metrics.FScore(threshold=0.5), 
@@ -38,7 +42,7 @@ for file in tqdm(os.listdir(folder)):
     losses = []
     ious = []
     f1s = []
-    T = 1
+    T = 50
     for i in tqdm(range(T)):
         scores = model.evaluate(test, verbose = 0)
         losses.append(scores[0])
@@ -56,6 +60,6 @@ for file in tqdm(os.listdir(folder)):
  
     # for appending df2 at the end of df1
     df_final = df_final.append(df_temp, ignore_index = True)
-
+print(df_final)
 df_final.to_csv('Uncertainty_comparison/uq.csv')
 
