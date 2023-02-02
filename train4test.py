@@ -124,7 +124,7 @@ def main(train):
             json_file.write(json_model)
         model.save_weights(f'{folder}/{model_name}_{EPOCHS}_{aug}_final.h5')
         run.finish()
-    np.save('Uncertainty_comparison/', scores_metrics)
+    np.save('Uncertainty_comparison', scores_metrics)
     return 
 
 if __name__ == "__main__":
