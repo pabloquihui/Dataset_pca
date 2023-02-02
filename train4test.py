@@ -78,14 +78,14 @@ def main(train):
     # UNET
     model = unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
     model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-    name = 'unet_model'
+    name = 'unet'
     folder = 'UNET'
 
     # ATTN UNET 
     # model = att_unet_org(img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH, n_label=N_CLASSES, data_format='channels_last')
     # model = attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
     # model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-    # name = 'attn_unet_model'
+    # name = 'attn_unet'
     # folder = 'ATTN_UNET'
 
     if not os.path.exists(folder):
@@ -113,9 +113,9 @@ def main(train):
 
     # serialize model to json
     json_model = model.to_json()#save the model architecture to JSON file
-    with open(f'{folder}/{name}_{aug}_final_test.json', 'w') as json_file:
+    with open(f'{folder}/{name}_{EPOCHS}_{aug}_final.json', 'w') as json_file:
         json_file.write(json_model)
-    model.save_weights(f'{folder}/{name}_{aug}_final_test.h5')
+    model.save_weights(f'{folder}/{name}_{EPOCHS}_{aug}_final.h5')
     run.finish()
     
     return 
