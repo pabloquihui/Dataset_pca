@@ -14,7 +14,7 @@ import os
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 folder = 'Uncertainty_comparison/models_files'
 test = tf.data.Dataset.load('split_tensor/test_ds/')
-test_len = tf.shape(test)[0]
+test_len = test.cardinality().numpy()                                           
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
 test = test.cache()
 test = test.batch(6)
