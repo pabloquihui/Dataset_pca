@@ -114,8 +114,8 @@ def main():
 
     preds_models = np.array(preds_models)
     entropy_models = np.array(entropy_models)
-    np.save('Uncertainty_models/preds_models', preds_models)
-    np.save('Uncertainty_models/entropy_models', entropy_models)
+    np.save('Uncertainty_comparison/preds_models', preds_models)
+    np.save('Uncertainty_comparison/entropy_models', entropy_models)
     print('-------------Evaluating--------------')
     print(df_final)
     df_final.to_csv('Uncertainty_comparison/uq.csv')
