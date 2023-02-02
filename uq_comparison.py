@@ -108,7 +108,7 @@ def main():
         test_tum = pred_prob_avg_tum[:,:,:,0]
 
         preds = np.array([model_name, test_argmax_all, test_argmax_gland, test_cz, test_pz, test_tz, test_tum])
-        entropy = np.array([entropy_all, entropy_gland, entropy_cz, entropy_pz, entropy_tz, entropy_tum, test])
+        entropy = np.array([model_name, entropy_all, entropy_gland, entropy_cz, entropy_pz, entropy_tz, entropy_tum])
         preds_models.append(preds)
         entropy_models.append(entropy)
 
