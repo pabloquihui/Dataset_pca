@@ -25,7 +25,7 @@ already_done = []
 for file in tqdm(os.listdir(folder)):
     model_name = os.path.splitext(file)[0]
     if model_name in already_done:
-        next
+        continue
     else:
         already_done.append(model_name)
     with open(f'{folder}/{model_name}.json', 'r') as json_file:
