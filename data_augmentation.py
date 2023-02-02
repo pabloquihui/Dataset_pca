@@ -19,8 +19,8 @@ import math
 # ## Images of the dataset
 
 dir_path = r'PNG'
-count_img = len(fnmatch.filter(os.listdir(dir_path + '/images'), '*.png*'))
-count_msk = len(fnmatch.filter(os.listdir(dir_path + '/labels'), '*.png*'))
+# count_img = len(fnmatch.filter(os.listdir(dir_path + '/images'), '*.png*'))
+# count_msk = len(fnmatch.filter(os.listdir(dir_path + '/labels'), '*.png*'))
 
 IMG_W = 256
 IMG_H = 256

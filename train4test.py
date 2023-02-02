@@ -43,27 +43,29 @@ test = tf.data.Dataset.load(main+'/split_tensor/test_ds/')
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
 test = test.cache()
 test = test.batch(BATCH_SIZE)
-
-if input('Do you want to apply data augmentation?(yes or no) ') == 'yes':
-    aug = 'Aug'
-
-else:
-    aug = 'Orig'
-
-def main(train):
-    
-    tf.keras.backend.clear_session()
-
+def get_parameters():
     LR = 0.0001
-    EPOCHS = 140
     optim = keras.optimizers.Adam(LR)
     lossfn = keras.losses.categorical_crossentropy
     metrics = [
             sm.metrics.IOUScore(threshold=0.5),
             sm.metrics.FScore(threshold=0.5),]
+    EPOCHS = 140
+    return EPOCHS, optim, lossfn, metrics
 
+def get_augmentation():
+    if input('Do you want to apply data augmentation?(yes or no) ') == 'yes':
+        return 'Aug'
+
+    else:
+        return 'Orig'
+
+def main(train):
+    tf.keras.backend.clear_session()
+    EPOCHS, optim, lossfn, metrics = get_parameters()
     train_ds = train.cache()
 
+    aug = get_augmentation()
     if aug == 'Aug':
         counter = tf.data.experimental.Counter()
         train_ds = tf.data.Dataset.zip((train_ds, (counter, counter)))
