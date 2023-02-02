@@ -18,6 +18,7 @@ test_len = test.cardinality().numpy()
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
 test = test.cache()
 test = test.batch(6)
+T = 50
 
 
 def is_repeating(model, list):
@@ -42,7 +43,6 @@ def get_eval_pred(model_obj, model_name):
     losses = []
     ious = []
     f1s = []
-    T = 50
     N_class = 5
     predictive_prob_total = np.zeros((test_len, 256, 256, N_class))
     for i in (range(T)):
