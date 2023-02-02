@@ -64,7 +64,7 @@ def get_eval_pred(model_obj, model_name):
     return df, predictive_prob_total
 
 
-def uncertainty():
+def main():
     df_final = pd.DataFrame()
     already_done = []
     preds_models = []
@@ -119,5 +119,6 @@ def uncertainty():
     print(df_final)
     df_final.to_csv('Uncertainty_comparison/uq.csv')
 
-    
-
+if __name__ == "__main__":
+    print ("Executing program")
+    main()
