@@ -70,6 +70,7 @@ def main():
     already_done = []
     preds_models = []
     entropy_models = []
+    prueba_entropia = []                                    #TODO
     for file in tqdm(os.listdir(folder)):
         model_name = os.path.splitext(file)[0]
         if is_repeating(model_name, already_done):
@@ -109,13 +110,18 @@ def main():
 
         preds = np.array([model_name, test_argmax_all, test_argmax_gland, test_cz, test_pz, test_tz, test_tum])
         entropy = np.array([model_name, entropy_all, entropy_gland, entropy_cz, entropy_pz, entropy_tz, entropy_tum])
+
         preds_models.append(preds)
         entropy_models.append(entropy)
+        prueba_entropia.append(predictive_prob_total)               #TODO
+        del preds, entropy
 
     preds_models = np.array(preds_models)
     entropy_models = np.array(entropy_models)
+    prueba_entropia = np.array(prueba_entropia)                     #TODO
     np.save('Uncertainty_comparison/preds_models', preds_models)
     np.save('Uncertainty_comparison/entropy_models', entropy_models)
+    np.save('Uncertainty_comparison/prueba_entropia', prueba_entropia)  #TODO
     print('-------------Evaluating--------------')
     print(df_final)
     df_final.to_csv('Uncertainty_comparison/uq.csv')
