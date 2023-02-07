@@ -108,12 +108,12 @@ def fa_unet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
     c5 = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c5)
 
     # Expansive path
-    u6 = attention_up_and_concate_fpa(c5, c4)
+    u6 = attention_up_and_concate(c5, c4)
     c6 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u6)
     c6 = Dropout(0.2)(c6)
     c6 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c6)
 
-    u7 = attention_up_and_concate_fpa(c6, c3)
+    u7 = attention_up_and_concate(c6, c3)
     c7 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u7)
     c7 = Dropout(0.2)(c7)
     c7 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c7)
