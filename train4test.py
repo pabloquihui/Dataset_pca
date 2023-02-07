@@ -51,7 +51,7 @@ def get_parameters():
     metrics = [
             sm.metrics.IOUScore(threshold=0.5),
             sm.metrics.FScore(threshold=0.5),]
-    EPOCHS = 170
+    EPOCHS = 145
     return EPOCHS, optim, lossfn, metrics
 
 def get_augmentation():
