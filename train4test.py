@@ -19,7 +19,7 @@ from dp_models.unet_MC import multi_unet_model as mc_unet_model
 from dp_models.unet import unet_model
 from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 # from dp_models.att_fpa import att_unet
-from dp_models.faunet import att_fpa_unet, faunet, mc_att_fpa_unet, mc_faunet
+from dp_models.faunet_ import fa_unet_model
 from dp_models.att_unet import attention_unet_model, mc_attention_unet_model
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
@@ -61,6 +61,18 @@ def get_augmentation():
     else:
         return 'Orig'
 
+def get_model(name):
+        if name == 'unet':
+            return mc_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        elif name == 'att_unet':
+            return mc_attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        elif name == 'dense_unet':
+            return mc_dense_unet(input_shape=(256, 256, 1), num_classes=5)
+        elif name == 'att_dense_unet':
+            return mc_attn_dense_unet(input_shape=(256, 256, 1), num_classes=5)
+        elif name == 'FAUNET':
+            return fa_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+
 def main(train):
     tf.keras.backend.clear_session()
     EPOCHS, optim, lossfn, metrics = get_parameters()
@@ -79,18 +91,12 @@ def main(train):
     else:
         train_ds = train_ds.shuffle(1000).batch(BATCH_SIZE)
     
-    def get_model(name):
-        if name == 'unet':
-            return mc_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
-        elif name == 'att_unet':
-            return mc_attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
-        elif name == 'dense_unet':
-            return mc_dense_unet(input_shape=(256, 256, 1), num_classes=5)
-        elif name == 'att_dense_unet':
-            return mc_attn_dense_unet(input_shape=(256, 256, 1), num_classes=5)
+    
 
-    names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet'])
+    # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet'])
+    names = np.array(['FAUNET'])
     folder = 'Uncertainty_comparison'
+    folder = 'FAUNETs'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
