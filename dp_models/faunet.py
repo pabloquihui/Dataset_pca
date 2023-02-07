@@ -7,9 +7,9 @@ from keras.models import Model
 # from keras.layers.merge import concatenate
 from keras.layers.core import Lambda
 import keras.backend as K
-from fpa_module import keras_fpa as fpa
+from dp_models.fpa_module import keras_fpa as fpa
 import tensorflow as tf
-from mcdropout import MCDropout
+from dp_models.mcdropout import MCDropout
 
 def up_and_concate(down_layer, layer, data_format='channels_first'):
     if data_format == 'channels_first':
