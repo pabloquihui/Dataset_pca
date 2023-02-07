@@ -118,7 +118,7 @@ def fa_unet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
     c7 = Dropout(0.2)(c7)
     c7 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c7)
 
-    u8 = attention_up_and_concate(c7, c2)
+    u8 = attention_up_and_concate_fpa(c7, c2)
     c8 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u8)
     c8 = Dropout(0.1)(c8)
     c8 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c8)
