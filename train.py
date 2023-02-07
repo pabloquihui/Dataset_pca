@@ -22,6 +22,7 @@ from dp_models.att_fpa import att_unet
 from dp_models.att_unet import attention_unet_model
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
+from dp_models.faunet import att_fpa_unet, faunet, mc_att_fpa_unet, mc_faunet
 import wandb
 from wandb.keras import WandbCallback
 # Notifications config:
@@ -70,7 +71,7 @@ def main(train, parameters):
     scores_final = []
     k = 5
     for i in range(k):
-        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'ATTUNET_{aug}_{i+1}fold')
+        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'FAUNET_{aug}_{i+1}fold')
         tf.keras.backend.clear_session()
         print(f'--------{i+1} Fold ----------')
         train_ds, val_ds = tf.keras.utils.split_dataset(
@@ -104,10 +105,10 @@ def main(train, parameters):
 
         # ATTN UNET 
         # model = att_unet_org(img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH, n_label=N_CLASSES, data_format='channels_last')
-        model = attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        model = att_fpa_unet(n_label=N_CLASSES, img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-        name = 'attn_unet_model'
-        folder = 'ATTN_UNET'
+        name = 'faunet1_model'
+        folder = 'FAUNET'
 
         if not os.path.exists(folder):
             os.makedirs(folder)

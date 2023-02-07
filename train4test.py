@@ -18,7 +18,8 @@ from dp_models.att_dense_unet import attn_dense_unet, mc_attn_dense_unet
 from dp_models.unet_MC import multi_unet_model as mc_unet_model
 from dp_models.unet import unet_model
 from dp_models.Dense_UNet import mc_dense_unet, dense_unet
-from dp_models.att_fpa import att_unet
+# from dp_models.att_fpa import att_unet
+from dp_models.faunet import att_fpa_unet, faunet, mc_att_fpa_unet, mc_faunet
 from dp_models.att_unet import attention_unet_model, mc_attention_unet_model
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
