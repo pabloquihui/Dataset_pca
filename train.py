@@ -21,7 +21,7 @@ from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 from dp_models.att_unet import attention_unet_model
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
-from dp_models.faunet import att_fpa_unet, faunet, mc_att_fpa_unet, mc_faunet
+from dp_models.faunet_ import fa_unet_model
 import wandb
 from wandb.keras import WandbCallback
 # Notifications config:
@@ -104,7 +104,7 @@ def main(train, parameters):
 
         # ATTN UNET 
         # model = att_unet_org(img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH, n_label=N_CLASSES, data_format='channels_last')
-        model = att_fpa_unet(n_label=N_CLASSES, img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH)
+        model = fa_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
         name = 'faunet1_model'
         folder = 'FAUNET'

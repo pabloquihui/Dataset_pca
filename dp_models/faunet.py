@@ -11,24 +11,6 @@ from dp_models.fpa_module import keras_fpa as fpa
 import tensorflow as tf
 from dp_models.mcdropout import MCDropout
 
-def up_and_concate(down_layer, layer, data_format='channels_first'):
-    if data_format == 'channels_first':
-        in_channel = down_layer.get_shape().as_list()[1]
-    else:
-        in_channel = down_layer.get_shape().as_list()[3]
-
-    # up = Conv2DTranspose(out_channel, [2, 2], strides=[2, 2])(down_layer)
-    up = UpSampling2D(size=(2, 2), data_format=data_format)(down_layer)
-
-    if data_format == 'channels_first':
-        my_concat = Lambda(lambda x: K.concatenate([x[0], x[1]], axis=1))
-    else:
-        my_concat = Lambda(lambda x: K.concatenate([x[0], x[1]], axis=3))
-
-    concate = my_concat([up, layer])
-
-    return concate
-
 def attention_up_and_concate(down_layer, layer, data_format='channels_last'):
     if data_format == 'channels_first':
         in_channel = down_layer.get_shape().as_list()[1]
@@ -135,7 +117,7 @@ def att_fpa_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     inputs = Input((img_h,img_w, img_ch))
     x = inputs
     depth = 4
-    features = 64
+    features = 16
     skips = []
     for i in range(depth):
         x = Conv2D(features, (3, 3), activation='relu', padding='same', data_format=data_format)(x)
