@@ -6,7 +6,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Dense, Dropout, Conv2D, LayerNormalization
 from tensorflow.keras.activations import softmax
 
-from keras_vision_transformer.util_layers import drop_path
+from dp_models.keras_vision_transformer.util_layers import drop_path
 
 def window_partition(x, window_size):
     
