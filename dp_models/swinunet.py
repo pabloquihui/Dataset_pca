@@ -5,9 +5,9 @@ from tensorflow.keras.layers import Input, Dense, Conv2D, concatenate
 import sys
 sys.path.append('../')
 
-from keras_vision_transformer import swin_layers
-from keras_vision_transformer import transformer_layers
-from keras_vision_transformer import utils
+from dp_models.keras_vision_transformer import swin_layers
+from dp_models.keras_vision_transformer import transformer_layers
+from dp_models.keras_vision_transformer import utils
 
 # PARAMETERS
 filter_num_begin = 128     # number of channels in the first downsampling block; it is also the number of embedded dimensions
