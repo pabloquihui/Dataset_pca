@@ -151,10 +151,10 @@ def main(train, parameters):
         print(f'Scores for {i+1} fold: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]};      {model.metrics_names[2]} of {scores[2]}')
 
         # serialize model to json
-        json_model = model.to_json()#save the model architecture to JSON file
-        with open(f'{folder}/{name}_{i+1}fold.json', 'w') as json_file:
-            json_file.write(json_model)
-        model.save_weights(f'{folder}/{name}_{i+1}.h5')
+#         json_model = model.to_json()#save the model architecture to JSON file
+#         with open(f'{folder}/{name}_{i+1}fold.json', 'w') as json_file:
+#             json_file.write(json_model)
+#         model.save_weights(f'{folder}/{name}_{i+1}.h5')
         run.finish()
     scores_final = np.array(scores_final)
     np.save(f'{folder}/{name}_{k}', scores_final)
