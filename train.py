@@ -19,6 +19,7 @@ from dp_models.unet_MC import multi_unet_model as mc_unet_model
 from dp_models.unet import unet_model
 from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 from dp_models.att_unet import attention_unet_model
+from dp_models.swinunet import swinunet_model
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
 from dp_models.faunet_ import fa_unet_model
@@ -104,10 +105,17 @@ def main(train, parameters):
 
         # ATTN UNET 
         # model = att_unet_org(img_h=IMG_H, img_w=IMG_W, img_ch=IMG_CH, n_label=N_CLASSES, data_format='channels_last')
-        model = fa_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        # model = fa_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        # model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
+        # name = 'faunet1_model'
+        # folder = 'FAUNET'
+        
+        # SwinUNet
+        model = swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-        name = 'faunet1_model'
-        folder = 'FAUNET'
+        name = 'swinunet_model'
+        folder = 'SWINUNET'
+        
 
         if not os.path.exists(folder):
             os.makedirs(folder)
