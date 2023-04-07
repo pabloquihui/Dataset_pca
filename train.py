@@ -71,7 +71,7 @@ def main(train, parameters):
     scores_final = []
     k = 5
     for i in range(k):
-        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'FAUNET_{aug}_{i+1}fold')
+        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'SWINUNET_{aug}_{i+1}fold')
         tf.keras.backend.clear_session()
         print(f'--------{i+1} Fold ----------')
         train_ds, val_ds = tf.keras.utils.split_dataset(
