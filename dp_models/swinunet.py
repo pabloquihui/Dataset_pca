@@ -154,7 +154,8 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
         X = transformer_layers.patch_expanding(num_patch=(num_patch_x, num_patch_y), 
                                                embed_dim=embed_dim, 
                                                upsample_rate=2, 
-                                               return_vector=True)(X)
+                                               return_vector=True,
+                                               name='up{}'.format(i))(X)
         
 
         # update token shape info
@@ -183,7 +184,8 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
     X = transformer_layers.patch_expanding(num_patch=(num_patch_x, num_patch_y), 
                                            embed_dim=embed_dim, 
                                            upsample_rate=patch_size[0], 
-                                           return_vector=False)(X)
+                                           return_vector=False,
+                                           name='up_last')(X)
     
     return X
 
