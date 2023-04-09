@@ -116,14 +116,16 @@ def main(train):
                                         save_model=False,
                                         save_weights_only=False
                                         )
-        
-        callbacks= [wandb_callback]
+        es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
+                                        patience=20, restore_best_weights=True)
+        callbacks= [wandb_callback, es]
 
         #Training
         history = model.fit(
             train_ds, 
             epochs=EPOCHS, 
             callbacks=callbacks,
+            validation_data = test
             )
 
         scores = model.evaluate(test, verbose=0)
