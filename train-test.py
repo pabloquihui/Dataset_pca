@@ -142,13 +142,14 @@ def main(train):
             json_model = model.to_json()#save the model architecture to JSON file
             with open(f'{folder}/{model_name}.json', 'w') as json_file:
                 json_file.write(json_model)
-            model.save_weights(f'{folder}/{model_name}.h5')
+            model.save_weights(f'{folder}/{model_name}_weights.h5')
         except Exception:
             traceback.print_exc()
 
         #Save Model
+        print('trying save 2')
         try:
-            model.save(f'{folder}/{model_name}_{EPOCHS}_{aug}_final')
+            model.save(f'{folder}/{model_name}.h5')
         except Exception:
             traceback.print_exc()
         run.finish()
