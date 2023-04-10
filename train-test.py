@@ -3,6 +3,7 @@
 ### Without Validation set (after kfold validation)
 ########################################
 import os
+import traceback
 # from keras_unet_collection import models, utils
 import tensorflow as tf
 import keras
@@ -142,10 +143,14 @@ def main(train):
             with open(f'{folder}/{model_name}.json', 'w') as json_file:
                 json_file.write(json_model)
             model.save_weights(f'{folder}/{model_name}.h5')
+        except Exception:
+            traceback.print_exc()
 
         #Save Model
         try:
             model.save(f'{folder}/{model_name}_{EPOCHS}_{aug}_final')
+        except Exception:
+            traceback.print_exc()
         run.finish()
     np.save(f'{folder}/segmentation_comparison', scores_metrics)
     return 
