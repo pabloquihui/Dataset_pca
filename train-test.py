@@ -138,18 +138,20 @@ def main(train):
         print(f'Scores for test set: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]};      {model.metrics_names[2]} of {scores[2]}')
 
         # serialize model to json
+        current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
         try:
             json_model = model.to_json()#save the model architecture to JSON file
-            with open(f'{folder}/{model_name}.json', 'w') as json_file:
+            with open(f'{folder}/{model_name}_{current_time}.json', 'w') as json_file:
                 json_file.write(json_model)
-            model.save_weights(f'{folder}/{model_name}_weights.h5')
+            model.save_weights(f'{folder}/{model_name}_weights_{current_time}.h5')
         except Exception:
             traceback.print_exc()
 
         #Save Model
         print('trying save 2')
         try:
-            model.save(f'{folder}/{model_name}.h5')
+            model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
+            model.save(f'{folder}/{model_name}_{current_time}.h5')
         except Exception:
             traceback.print_exc()
         run.finish()
