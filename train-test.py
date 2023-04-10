@@ -12,7 +12,7 @@ import datetime
 from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import requests
-from dp_models.attn_multi_model import r2_unet, mc_att_unet
+from dp_models.attn_multi_model import r2_unet, mc_att_unet, att_r2_unet
 from dp_models.attn_multi_model import att_unet as att_unet_org
 from dp_models.att_dense_unet import attn_dense_unet, mc_attn_dense_unet
 from dp_models.unet_MC import multi_unet_model as mc_unet_model
@@ -64,17 +64,21 @@ def get_augmentation():
 
 def get_model(name):
         if name == 'unet':
-            return mc_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+            return unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'att_unet':
-            return mc_attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+            return attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'dense_unet':
-            return mc_dense_unet(input_shape=(256, 256, 1), num_classes=5)
+            return dense_unet(input_shape=(256, 256, 1), num_classes=5)
         elif name == 'att_dense_unet':
-            return mc_attn_dense_unet(input_shape=(256, 256, 1), num_classes=5)
-        elif name == 'FAUNET':
+            return attn_dense_unet(input_shape=(256, 256, 1), num_classes=5)
+        elif name == 'faunet':
             return fa_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'swinunet':
             return swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        elif name == 'r2unet':
+            return r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
+        elif name == 'att_r2unet':
+            return att_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
 
 def main(train):
     tf.keras.backend.clear_session()
@@ -96,10 +100,10 @@ def main(train):
     
     
 
-    # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet'])
+    names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
-    names = np.array(['swinunet'])
-    folder = 'SWINUNET'
+#     names = np.array(['swinunet'])
+    folder = 'Segmentation_thesis'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -116,16 +120,16 @@ def main(train):
                                         save_model=False,
                                         save_weights_only=False
                                         )
-        es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
-                                        patience=20, restore_best_weights=True)
-        callbacks= [wandb_callback, es]
+#         es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
+#                                         patience=20, restore_best_weights=True)
+        callbacks= [wandb_callback]
 
         #Training
         history = model.fit(
             train_ds, 
             epochs=EPOCHS, 
             callbacks=callbacks,
-            validation_data = test
+#             validation_data = test
             )
 
         scores = model.evaluate(test, verbose=0)
@@ -133,15 +137,17 @@ def main(train):
         print(f'Scores for test set: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]};      {model.metrics_names[2]} of {scores[2]}')
 
         # serialize model to json
-        # json_model = model.to_json()#save the model architecture to JSON file
-        # with open(f'{folder}/{model_name}_{EPOCHS}_{aug}_final.json', 'w') as json_file:
-        #     json_file.write(json_model)
-        # model.save_weights(f'{folder}/{model_name}_{EPOCHS}_{aug}_final.h5')
+        try:
+            json_model = model.to_json()#save the model architecture to JSON file
+            with open(f'{folder}/{model_name}.json', 'w') as json_file:
+                json_file.write(json_model)
+            model.save_weights(f'{folder}/{model_name}.h5')
 
         #Save Model
-        model.save(f'{folder}/{model_name}_{EPOCHS}_{aug}_final')
+        try:
+            model.save(f'{folder}/{model_name}_{EPOCHS}_{aug}_final')
         run.finish()
-    np.save('Uncertainty_comparison', scores_metrics)
+    np.save(f'{folder}/segmentation_comparison', scores_metrics)
     return 
 
 if __name__ == "__main__":
