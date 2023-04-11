@@ -104,7 +104,7 @@ def main(train):
     names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
-    folder = 'Segmentation_thesis_es'
+    folder = 'Segmentation_thesis_aug'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
