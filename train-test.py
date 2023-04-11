@@ -110,6 +110,7 @@ def main(train):
 
     scores_metrics = []
     for model_name in names:
+        tf.random.set_seed(42)
         run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{model_name}_{aug}_final')
         model = get_model(model_name)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
