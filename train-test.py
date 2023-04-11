@@ -104,7 +104,7 @@ def main(train):
     names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
-    folder = 'Segmentation_thesis'
+    folder = 'Segmentation_thesis_es'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -121,8 +121,8 @@ def main(train):
                                         save_model=False,
                                         save_weights_only=False
                                         )
-#         es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
-#                                         patience=20, restore_best_weights=True)
+        es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
+                                        patience=20, restore_best_weights=True)
         callbacks= [wandb_callback]
 
         #Training
@@ -130,7 +130,7 @@ def main(train):
             train_ds, 
             epochs=EPOCHS, 
             callbacks=callbacks,
-#             validation_data = test
+            validation_data = test
             )
 
         scores = model.evaluate(test, verbose=0)
