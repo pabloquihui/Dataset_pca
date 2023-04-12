@@ -35,7 +35,7 @@ IMG_W = 256
 IMG_H = 256
 IMG_CH = 1
 N_CLASSES = 5
-BATCH_SIZE = 24
+BATCH_SIZE = 16
 
 # ## Dataset
 main = os.getcwd()
@@ -101,10 +101,11 @@ def main(train):
     
     
 
-    names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
+#     names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
+    names = np.array(['unet', 'faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
-    folder = 'Segmentation_thesis_20%_batch24'
+    folder = f'Segmentation_thesis_20%_batch{BATCH_SIZE}'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
