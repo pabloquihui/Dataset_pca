@@ -12,7 +12,7 @@ import datetime
 from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import requests
-from dp_models.attn_multi_model import r2_unet, mc_att_unet
+from dp_models.attn_multi_model import r2_unet, mc_att_unet, mc_r2_unet, mc_r2_unet2
 from dp_models.attn_multi_model import att_unet as att_unet_org
 from dp_models.att_dense_unet import attn_dense_unet, mc_attn_dense_unet
 from dp_models.unet_MC import multi_unet_model as mc_unet_model
@@ -70,8 +70,14 @@ def main(train, parameters):
 
     scores_final = []
     k = 5
+
+    
     for i in range(k):
-        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'SWINUNET_{aug}_{i+1}fold')
+        model = mc_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
+        model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
+        name = 'mc_r2unet_model-1'
+        folder = 'r2unet_pruebamc'
+        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{name}_{aug}_{i+1}fold')
         tf.keras.backend.clear_session()
         print(f'--------{i+1} Fold ----------')
         train_ds, val_ds = tf.keras.utils.split_dataset(
@@ -110,12 +116,6 @@ def main(train, parameters):
         # name = 'faunet1_model'
         # folder = 'FAUNET'
         
-        # SwinUNet
-        model = swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
-        model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-        name = 'swinunet_model'
-        folder = 'SWINUNET'
-        
 
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -145,8 +145,11 @@ def main(train, parameters):
             epochs=EPOCHS, 
             callbacks=callbacks,
             validation_data=val_ds)
-
-        scores = model.evaluate(val_ds, verbose=0)
+        scores = []
+        for k in range(20):
+            scores.append(model.evaluate(val_ds, verbose=0))
+        scores = np.array(scores)
+        scores = np.mean(scores, axis=0)
         scores_final.append(scores)
         print(f'Scores for {i+1} fold: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]};      {model.metrics_names[2]} of {scores[2]}')
 
@@ -158,6 +161,9 @@ def main(train, parameters):
         run.finish()
     scores_final = np.array(scores_final)
     np.save(f'{folder}/{name}_{k}', scores_final)
+    df = pd.DataFrame(scores_final, columns=['loss', 'iou', 'f1'])
+    print(df)
+    df.to_csv(f'{folder}/mc_comparison_{name}.csv')
     return scores_final
 
 if __name__ == "__main__":
