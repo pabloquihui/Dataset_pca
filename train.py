@@ -140,7 +140,7 @@ def main(train, parameters):
                 callbacks=callbacks,
                 validation_data=val_ds)
             scores = []
-            for k in range(20):
+            for j in range(20):
                 scores.append(model.evaluate(val_ds, verbose=0))
             scores = np.array(scores)
             scores = np.mean(scores, axis=0)
