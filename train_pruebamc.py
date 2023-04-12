@@ -167,7 +167,7 @@ def main(train):
     prueb1 = model.predict(test.take(1))
     prueb2 = model.predict(test.take(1)) 
     
-    print(prueb1==prueb2)
+    print(np.array_equal(prueb1, prueb2))
     return 
 
 if __name__ == "__main__":
