@@ -106,7 +106,7 @@ def main(train):
 
     # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
 #     names = np.array(['unet', 'faunet', 'swinunet'])
-    names = np.array(['mc_r2unet-1, mc_r2unet-2'])
+    names = np.array(['mc_r2unet-1', 'mc_r2unet-2'])
 #     names = np.array(['swinunet'])
     # folder = f'r2unet_pruebamc'
     # if not os.path.exists(folder):
@@ -114,6 +114,7 @@ def main(train):
 
     scores_metrics = []
     for model_name in names:
+        print(model_name)
         tf.random.set_seed(42)
         run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{model_name}_{aug}_final_b{BATCH_SIZE}')
         model = get_model(model_name)
