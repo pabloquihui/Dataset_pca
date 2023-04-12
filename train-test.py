@@ -35,7 +35,7 @@ IMG_W = 256
 IMG_H = 256
 IMG_CH = 1
 N_CLASSES = 5
-BATCH_SIZE = 16
+BATCH_SIZE = 8
 
 # ## Dataset
 main = os.getcwd()
