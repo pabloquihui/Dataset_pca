@@ -35,7 +35,7 @@ IMG_W = 256
 IMG_H = 256
 IMG_CH = 1
 N_CLASSES = 5
-BATCH_SIZE = 8
+BATCH_SIZE = 6
 
 # ## Dataset
 main = os.getcwd()
@@ -101,8 +101,8 @@ def main(train):
     
     
 
-#     names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
-    names = np.array(['unet', 'faunet', 'swinunet'])
+    names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
+#     names = np.array(['unet', 'faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
     folder = f'Segmentation_thesis_20%_batch{BATCH_SIZE}'
@@ -132,7 +132,7 @@ def main(train):
             train_ds, 
             epochs=EPOCHS, 
             callbacks=callbacks,
-            validation_data = test
+#             validation_data = test
             )
 
         scores = model.evaluate(test, verbose=0)
