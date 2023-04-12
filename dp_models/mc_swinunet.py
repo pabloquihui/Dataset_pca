@@ -8,6 +8,7 @@ from dp_models.mcdropout import MCDropout
 from dp_models.keras_vision_transformer import swin_layers
 from dp_models.keras_vision_transformer import transformer_layers
 from dp_models.keras_vision_transformer import utils
+from dp_models.mcdropout import MCDropout
 
 # PARAMETERS
 filter_num_begin = 128     # number of channels in the first downsampling block; it is also the number of embedded dimensions
@@ -108,6 +109,7 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
                                num_mlp=num_mlp, 
                                shift_window=shift_window, 
                                name='{}_swin_down0'.format(name))
+    X = MCDropout(0.2)(X)
     X_skip.append(X)
     
     # Downsampling blocks
@@ -131,6 +133,7 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
                                    num_mlp=num_mlp, 
                                    shift_window=shift_window, 
                                    name='{}_swin_down{}'.format(name, i+1))
+        X = MCDropout(0.2)(X)
         
         # Store tensors for concat
         X_skip.append(X)
@@ -177,6 +180,7 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
                                    num_mlp=num_mlp, 
                                    shift_window=shift_window, 
                                    name='{}_swin_up{}'.format(name, i))
+        X = MCDropout(0.2)(X)
         
     # The last expanding layer; it produces full-size feature maps based on the patch size
     # !!! <--- "patch_size[0]" is used; it assumes patch_size = (size, size)
@@ -190,7 +194,7 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
     return X
 
 
-def swinunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
+def mc_swinunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
     IN = Input((IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS))
 
     # Base architecture
@@ -204,13 +208,12 @@ def swinunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
     model = Model(inputs=[IN,], outputs=[OUT,])
     return model
 
-
 if __name__ == "__main__":
     IMG_HEIGHT = 256
     IMG_WIDTH = 256
     IMG_CHANNELS = 1
     n_classes = 5
-    model = swinunet_model(n_classes, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS)
+    model = mc_swinunet_model(n_classes, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS)
     model.summary()
 # opt = keras.optimizers.Adam(learning_rate=1e-4, clipvalue=0.5)
 
