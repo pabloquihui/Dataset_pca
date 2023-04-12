@@ -2,3 +2,4 @@
 /Patients
 *.pyc
 /logs
+.DS_Store

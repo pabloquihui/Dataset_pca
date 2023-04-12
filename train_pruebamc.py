@@ -3,6 +3,7 @@
 ### Without Validation set (after kfold validation)
 ########################################
 import os
+import traceback
 # from keras_unet_collection import models, utils
 import tensorflow as tf
 import keras
@@ -12,7 +13,7 @@ import datetime
 from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import requests
-from dp_models.attn_multi_model import r2_unet, mc_att_unet
+from dp_models.attn_multi_model import r2_unet, mc_att_unet, att_r2_unet
 from dp_models.attn_multi_model import att_unet as att_unet_org
 from dp_models.att_dense_unet import attn_dense_unet, mc_attn_dense_unet
 from dp_models.unet_MC import multi_unet_model as mc_unet_model
@@ -22,6 +23,7 @@ from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 from dp_models.faunet_ import fa_unet_model
 from dp_models.faunet import faunet
 from dp_models.att_unet import attention_unet_model, mc_attention_unet_model
+from dp_models.swinunet import swinunet_model
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
 import wandb
@@ -52,7 +54,7 @@ def get_parameters():
     metrics = [
             sm.metrics.IOUScore(threshold=0.5),
             sm.metrics.FScore(threshold=0.5),]
-    EPOCHS = 145
+    EPOCHS = 1
     return EPOCHS, optim, lossfn, metrics
 
 def get_augmentation():
@@ -64,15 +66,21 @@ def get_augmentation():
 
 def get_model(name):
         if name == 'unet':
-            return mc_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+            return unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'att_unet':
-            return mc_attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+            return attention_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'dense_unet':
-            return mc_dense_unet(input_shape=(256, 256, 1), num_classes=5)
+            return dense_unet(input_shape=(256, 256, 1), num_classes=5)
         elif name == 'att_dense_unet':
-            return mc_attn_dense_unet(input_shape=(256, 256, 1), num_classes=5)
-        elif name == 'FAUNET':
+            return attn_dense_unet(input_shape=(256, 256, 1), num_classes=5)
+        elif name == 'faunet':
             return fa_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        elif name == 'swinunet':
+            return swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        elif name == 'r2unet':
+            return r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
+        elif name == 'att_r2unet':
+            return att_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
 
 def main(train):
     tf.keras.backend.clear_session()
@@ -94,16 +102,18 @@ def main(train):
     
     
 
-    # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet'])
-    names = np.array(['FAUNET'])
-    folder = 'Uncertainty_comparison'
-    folder = 'FAUNETs'
+    # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
+#     names = np.array(['unet', 'faunet', 'swinunet'])
+    names = np.array(['r2unet'])
+#     names = np.array(['swinunet'])
+    folder = f'r2unet_pruebamc'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
     scores_metrics = []
     for model_name in names:
-        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{model_name}_{aug}_final')
+        tf.random.set_seed(42)
+        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{model_name}_{aug}_final_b{BATCH_SIZE}')
         model = get_model(model_name)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
     
@@ -114,7 +124,8 @@ def main(train):
                                         save_model=False,
                                         save_weights_only=False
                                         )
-        
+        es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, 
+                                        patience=20, restore_best_weights=True)
         callbacks= [wandb_callback]
 
         #Training
@@ -122,6 +133,7 @@ def main(train):
             train_ds, 
             epochs=EPOCHS, 
             callbacks=callbacks,
+#             validation_data = test
             )
 
         scores = model.evaluate(test, verbose=0)
@@ -129,12 +141,33 @@ def main(train):
         print(f'Scores for test set: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]};      {model.metrics_names[2]} of {scores[2]}')
 
         # serialize model to json
-        json_model = model.to_json()#save the model architecture to JSON file
-        with open(f'{folder}/{model_name}_{EPOCHS}_{aug}_final.json', 'w') as json_file:
-            json_file.write(json_model)
-        model.save_weights(f'{folder}/{model_name}_{EPOCHS}_{aug}_final.h5')
+        # current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
+        # try:
+        #     model.save_weights(f'{folder}/{model_name}_weights_{current_time}.h5')
+        #     json_model = model.to_json()#save the model architecture to JSON file
+        #     with open(f'{folder}/{model_name}_{current_time}.json', 'w') as json_file:
+        #         json_file.write(json_model)
+        # except Exception:
+        #     traceback.print_exc()
+
+        # #Save Model
+        # print('trying save 2')
+        # try:
+        #     model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
+        #     model.save(f'{folder}/{model_name}_{current_time}.h5')
+        # except Exception:
+        #     traceback.print_exc()
         run.finish()
-    np.save('Uncertainty_comparison', scores_metrics)
+    # np.save(f'{folder}/segmentation_comparison', scores_metrics)
+    
+    df = pd.DataFrame(scores_metrics)
+    print(df)
+    # df.to_csv(f'{folder}/seg_comparison_15%.csv')
+
+    prueb1 = model.predict(test.take(1))
+    prueb2 = model.predict(test.take(1)) 
+    
+    print(prueb1==prueb2)
     return 
 
 if __name__ == "__main__":
@@ -142,6 +175,5 @@ if __name__ == "__main__":
     main(train)
 ### Send notification to iPhone ###
     notif = requests.post(url=url_notif)
-
 
 
