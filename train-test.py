@@ -105,7 +105,7 @@ def main(train):
 #     names = np.array(['unet', 'faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
-    folder = f'Segmentation_thesis_20%_batch{BATCH_SIZE}'
+    folder = f'Segmentation_thesis_15%_batch{BATCH_SIZE}'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -158,6 +158,9 @@ def main(train):
             traceback.print_exc()
         run.finish()
     np.save(f'{folder}/segmentation_comparison', scores_metrics)
+    
+    df = pd.DataFrame(scores_metrics)
+    df.to_csv(f'{folder}/seg_comparison_15%.csv')
     return 
 
 if __name__ == "__main__":
