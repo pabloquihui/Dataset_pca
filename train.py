@@ -75,7 +75,7 @@ def main(train, parameters):
     for i in range(k):
         model = mc_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-        name = 'mc_r2unet_model-1'
+        name = 'mc_r2unet_model-2'
         folder = 'r2unet_pruebamc'
         run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{name}_{aug}_{i+1}fold')
         tf.keras.backend.clear_session()
