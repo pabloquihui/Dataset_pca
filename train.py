@@ -19,7 +19,8 @@ from dp_models.unet_MC import multi_unet_model as mc_unet_model
 from dp_models.unet import unet_model
 from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 from dp_models.att_unet import attention_unet_model
-from dp_models.swinunet import swinunet_model, mc_swinunet_model
+from dp_models.swinunet import swinunet_model
+from dp_models.mc_swinunet import mc_swinunet_model
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
 from dp_models.faunet_ import fa_unet_model
@@ -62,7 +63,7 @@ def get_model(name):
         elif name == 'mc_swinunet':
             return mc_swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         
-model_names = ['mc_r2unet-1','mc_r2unet-2', 'mc_swinunet']
+model_names = ['mc_swinunet']
 
 def main(train, parameters):
     IMG_W = parameters[0]
