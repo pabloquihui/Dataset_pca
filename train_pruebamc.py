@@ -54,7 +54,7 @@ def get_parameters():
     metrics = [
             sm.metrics.IOUScore(threshold=0.5),
             sm.metrics.FScore(threshold=0.5),]
-    EPOCHS = 1
+    EPOCHS = 145
     return EPOCHS, optim, lossfn, metrics
 
 def get_augmentation():
@@ -108,9 +108,9 @@ def main(train):
 #     names = np.array(['unet', 'faunet', 'swinunet'])
     names = np.array(['mc_r2unet-1', 'mc_r2unet-2'])
 #     names = np.array(['swinunet'])
-    # folder = f'r2unet_pruebamc'
-    # if not os.path.exists(folder):
-    #         os.makedirs(folder)
+    folder = f'r2unet_pruebamc'
+    if not os.path.exists(folder):
+            os.makedirs(folder)
 
     scores_metrics = []
     for model_name in names:
@@ -138,38 +138,42 @@ def main(train):
             callbacks=callbacks,
 #             validation_data = test
             )
-
-        scores = model.evaluate(test, verbose=0)
+        scores = []
+        for i in range(20):
+            temp = model.evaluate(test, verbose=0)
+            scores.append(temp)
+        scores = np.array(scores)
+        scores = np.mean(scores, axis=0)
         scores_metrics.append(scores)
         print(f'Scores for test set: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]};      {model.metrics_names[2]} of {scores[2]}')
 
         # serialize model to json
-        # current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
-        # try:
-        #     model.save_weights(f'{folder}/{model_name}_weights_{current_time}.h5')
-        #     json_model = model.to_json()#save the model architecture to JSON file
-        #     with open(f'{folder}/{model_name}_{current_time}.json', 'w') as json_file:
-        #         json_file.write(json_model)
-        # except Exception:
-        #     traceback.print_exc()
+        current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
+        try:
+            model.save_weights(f'{folder}/{model_name}_weights_{current_time}.h5')
+            json_model = model.to_json()#save the model architecture to JSON file
+            with open(f'{folder}/{model_name}_{current_time}.json', 'w') as json_file:
+                json_file.write(json_model)
+        except Exception:
+            traceback.print_exc()
 
-        # #Save Model
-        # print('trying save 2')
-        # try:
-        #     model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
-        #     model.save(f'{folder}/{model_name}_{current_time}.h5')
-        # except Exception:
-        #     traceback.print_exc()
+        #Save Model
+        print('trying save 2')
+        try:
+            model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
+            model.save(f'{folder}/{model_name}_{current_time}.h5')
+        except Exception:
+            traceback.print_exc()
         run.finish()
-        prueb1 = model.predict(test.take(1))
-        prueb2 = model.predict(test.take(1)) 
+        # prueb1 = model.predict(test.take(1))
+        # prueb2 = model.predict(test.take(1)) 
     
-        print(f'{model} =  {np.array_equal(prueb1, prueb2)}')
-    # np.save(f'{folder}/segmentation_comparison', scores_metrics)
+        # print(f'{model_name} =  {np.array_equal(prueb1, prueb2)}')
+    np.save(f'{folder}/segmentation_comparison', scores_metrics)
     
     df = pd.DataFrame(scores_metrics)
     print(df)
-    # df.to_csv(f'{folder}/seg_comparison_15%.csv')
+    df.to_csv(f'{folder}/mc_comparison_r2unet.csv')
 
     
     return 
