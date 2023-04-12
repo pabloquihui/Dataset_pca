@@ -13,7 +13,7 @@ import datetime
 from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import requests
-from dp_models.attn_multi_model import r2_unet, mc_att_unet, att_r2_unet
+from dp_models.attn_multi_model import r2_unet, mc_att_unet, att_r2_unet, mc_r2_unet, mc_r2_unet2
 from dp_models.attn_multi_model import att_unet as att_unet_org
 from dp_models.att_dense_unet import attn_dense_unet, mc_attn_dense_unet
 from dp_models.unet_MC import multi_unet_model as mc_unet_model
@@ -77,8 +77,10 @@ def get_model(name):
             return fa_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'swinunet':
             return swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
-        elif name == 'r2unet':
-            return r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
+        elif name == 'mc_r2unet-1':
+            return mc_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
+        elif name == 'mc_r2unet-2':
+            return mc_r2_unet2(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
         elif name == 'att_r2unet':
             return att_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
 
@@ -104,11 +106,11 @@ def main(train):
 
     # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
 #     names = np.array(['unet', 'faunet', 'swinunet'])
-    names = np.array(['r2unet'])
+    names = np.array(['mc_r2unet-1, mc_r2unet-2'])
 #     names = np.array(['swinunet'])
-    folder = f'r2unet_pruebamc'
-    if not os.path.exists(folder):
-            os.makedirs(folder)
+    # folder = f'r2unet_pruebamc'
+    # if not os.path.exists(folder):
+    #         os.makedirs(folder)
 
     scores_metrics = []
     for model_name in names:
@@ -158,16 +160,17 @@ def main(train):
         # except Exception:
         #     traceback.print_exc()
         run.finish()
+        prueb1 = model.predict(test.take(1))
+        prueb2 = model.predict(test.take(1)) 
+    
+        print(f'{model} =  {np.array_equal(prueb1, prueb2)}')
     # np.save(f'{folder}/segmentation_comparison', scores_metrics)
     
     df = pd.DataFrame(scores_metrics)
     print(df)
     # df.to_csv(f'{folder}/seg_comparison_15%.csv')
 
-    prueb1 = model.predict(test.take(1))
-    prueb2 = model.predict(test.take(1)) 
     
-    print(np.array_equal(prueb1, prueb2))
     return 
 
 if __name__ == "__main__":

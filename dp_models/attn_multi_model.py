@@ -139,6 +139,43 @@ def rec_res_block(input_layer, out_n_filters, batch_normalization=False, kernel_
     out_layer = add([layer, skip_layer])
     return out_layer
 
+# Recurrent Residual Convolutional Neural Network based on U-Net (R2U-Net)
+def mc_rec_res_block(input_layer, out_n_filters, batch_normalization=False, kernel_size=[3, 3], stride=[1, 1],
+
+                  padding='same', data_format='channels_last'):
+    if data_format == 'channels_first':
+        input_n_filters = input_layer.get_shape().as_list()[1]
+    else:
+        input_n_filters = input_layer.get_shape().as_list()[3]
+
+    if out_n_filters != input_n_filters:
+        skip_layer = Conv2D(out_n_filters, [1, 1], strides=stride, padding=padding, data_format=data_format)(
+            input_layer)
+    else:
+        skip_layer = input_layer
+
+    layer = skip_layer
+    for j in range(2):
+
+        for i in range(2):
+            if i == 0:
+
+                layer1 = Conv2D(out_n_filters, kernel_size, strides=stride, padding=padding, data_format=data_format)(
+                    layer)
+                layer1 = MCDropout(0.2)(layer1)
+                if batch_normalization:
+                    layer1 = BatchNormalization()(layer1)
+                layer1 = Activation('relu')(layer1)
+            layer1 = Conv2D(out_n_filters, kernel_size, strides=stride, padding=padding, data_format=data_format)(
+                add([layer1, layer]))
+            if batch_normalization:
+                layer1 = BatchNormalization()(layer1)
+            layer1 = Activation('relu')(layer1)
+        layer = layer1
+
+    out_layer = add([layer, skip_layer])
+    return out_layer
+
 ########################################################################################################
 # Define the neural network
 def unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
@@ -305,3 +342,55 @@ def att_r2_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     return model
 
 
+########################################################################################################
+#Montecarlo Recurrent Residual Convolutional Neural Network based on U-Net (MC-R2U-Net)
+def mc_r2_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
+    inputs = Input((img_h,img_w, img_ch))
+    x = inputs
+    depth = 4
+    features = 16
+    skips = []
+    for i in range(depth):
+        x = rec_res_block(x, features, data_format=data_format)
+        skips.append(x)
+        x = MaxPooling2D((2, 2), data_format=data_format)(x)
+        features = features * 2
+    x = rec_res_block(x, features, data_format=data_format)
+
+    for i in reversed(range(depth)):
+        features = features // 2
+        x = up_and_concate(x, skips[i], data_format=data_format)
+        x = rec_res_block(x, features, data_format=data_format)
+
+    conv6 = Conv2D(n_label, (1, 1), padding='same', data_format=data_format)(x)
+    conv6 = MCDropout(0.2)(conv6)
+    conv7 = core.Activation('softmax')(conv6)
+    model = Model(inputs=inputs, outputs=conv7)
+    #model.compile(optimizer=Adam(lr=1e-6), loss=[dice_coef_loss], metrics=['accuracy', dice_coef])
+    return model
+
+########################################################################################################
+#Montecarlo Recurrent Residual Convolutional Neural Network based on U-Net (MC-R2U-Net)
+def mc_r2_unet2(img_h, img_w, img_ch, n_label, data_format='channels_last'):
+    inputs = Input((img_h,img_w, img_ch))
+    x = inputs
+    depth = 4
+    features = 16
+    skips = []
+    for i in range(depth):
+        x = mc_rec_res_block(x, features, data_format=data_format)
+        skips.append(x)
+        x = MaxPooling2D((2, 2), data_format=data_format)(x)
+        features = features * 2
+    x = mc_rec_res_block(x, features, data_format=data_format)
+
+    for i in reversed(range(depth)):
+        features = features // 2
+        x = up_and_concate(x, skips[i], data_format=data_format)
+        x = mc_rec_res_block(x, features, data_format=data_format)
+
+    conv6 = Conv2D(n_label, (1, 1), padding='same', data_format=data_format)(x)
+    conv7 = core.Activation('softmax')(conv6)
+    model = Model(inputs=inputs, outputs=conv7)
+    #model.compile(optimizer=Adam(lr=1e-6), loss=[dice_coef_loss], metrics=['accuracy', dice_coef])
+    return model
