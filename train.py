@@ -79,16 +79,17 @@ def main(train, parameters):
             sm.metrics.IOUScore(threshold=0.5),
             sm.metrics.FScore(threshold=0.5),]
 
-    scores_final = []
+    
     k = 5
 
     for model_name in model_names:
         print(f'--------{model_name} ----------')
+        scores_final = []
         for i in range(k):
             # model = mc_r2_unet2(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
             model = get_model(model_name)
             model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-            folder = 'r2unet_pruebamc'
+            folder = 'ablation_study'
             run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{model_name}_{aug}_{i+1}fold')
             tf.keras.backend.clear_session()
             print(f'--------{i+1} Fold ----------')
