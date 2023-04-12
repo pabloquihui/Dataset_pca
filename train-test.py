@@ -35,7 +35,7 @@ IMG_W = 256
 IMG_H = 256
 IMG_CH = 1
 N_CLASSES = 5
-BATCH_SIZE = 6
+BATCH_SIZE = 24
 
 # ## Dataset
 main = os.getcwd()
@@ -104,14 +104,14 @@ def main(train):
     names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
-    folder = 'Segmentation_thesis_aug'
+    folder = 'Segmentation_thesis_20%_batch24'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
     scores_metrics = []
     for model_name in names:
         tf.random.set_seed(42)
-        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{model_name}_{aug}_final')
+        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{model_name}_{aug}_final_b{BATCH_SIZE}')
         model = get_model(model_name)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
     
