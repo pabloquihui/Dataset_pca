@@ -4,7 +4,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense, Conv2D, concatenate
 import sys
 sys.path.append('../')
-
+from dp_models.mcdropout import MCDropout
 from dp_models.keras_vision_transformer import swin_layers
 from dp_models.keras_vision_transformer import transformer_layers
 from dp_models.keras_vision_transformer import utils
@@ -200,7 +200,21 @@ def swinunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
 
     # Output section
     OUT = Conv2D(n_classes, kernel_size=1, use_bias=False, activation='softmax')(X)
+    # Model configuration
+    model = Model(inputs=[IN,], outputs=[OUT,])
+    return model
 
+def mc_swinunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
+    IN = Input((IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS))
+
+    # Base architecture
+    X = swin_unet_2d_base(IN, filter_num_begin, depth, stack_num_down, stack_num_up, 
+                        patch_size, num_heads, window_size, num_mlp, 
+                        shift_window=shift_window, name='swin_unet')
+
+    # Output section
+    OUT = Conv2D(n_classes, kernel_size=1, use_bias=False, activation='softmax')(X)
+    OUT = MCDropout(0.2)(OUT)
     # Model configuration
     model = Model(inputs=[IN,], outputs=[OUT,])
     return model
