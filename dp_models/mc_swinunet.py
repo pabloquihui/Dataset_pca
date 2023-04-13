@@ -11,7 +11,7 @@ from dp_models.keras_vision_transformer import utils
 from dp_models.mcdropout import MCDropout
 
 # PARAMETERS
-filter_num_begin = 16 #128     # number of channels in the first downsampling block; it is also the number of embedded dimensions
+filter_num_begin = 128     # number of channels in the first downsampling block; it is also the number of embedded dimensions
 depth = 4                  # the depth of SwinUNET; depth=4 means three down/upsampling levels and a bottom level 
 stack_num_down = 2         # number of Swin Transformers per downsampling level
 stack_num_up = 2           # number of Swin Transformers per upsampling level
@@ -30,10 +30,10 @@ def swin_transformer_stack(X, stack_num, embed_dim, num_patch, num_heads, window
     *Dropout is turned off.
     '''
     # Turn-off dropouts
-    mlp_drop_rate = 0 # Droupout after each MLP layer
-    attn_drop_rate = 0 # Dropout after Swin-Attention
-    proj_drop_rate = 0 # Dropout at the end of each Swin-Attention block, i.e., after linear projections
-    drop_path_rate = 0 # Drop-path within skip-connections
+    mlp_drop_rate = 0.1 # Droupout after each MLP layer
+    attn_drop_rate = 0.1 # Dropout after Swin-Attention
+    proj_drop_rate = 0.1 # Dropout at the end of each Swin-Attention block, i.e., after linear projections
+    drop_path_rate = 0.1 # Drop-path within skip-connections
     
     qkv_bias = True # Convert embedded patches to query, key, and values with a learnable additive value
     qk_scale = None # None: Re-scale query based on embed dimensions per attention head # Float for user specified scaling factor
