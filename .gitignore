@@ -3,4 +3,7 @@
 *.pyc
 /logs
 .DS_Store
-Uncertainty_comparison_12-04
+Uncertainty_comparison_12-04/full_model
+Uncertainty_comparison_12-04/faunet.csv
+Uncertainty_comparison_12-04/seg_comparison2.csv
+Uncertainty_comparison_12-04/models/swinunet.h5
