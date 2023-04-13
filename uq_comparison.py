@@ -4,6 +4,7 @@ from tensorflow.keras.models import load_model, model_from_json
 import segmentation_models as sm
 from dp_models.mcdropout import MCDropout
 from dp_models.mc_swinunet import mc_swinunet_model
+from dp_models.mc_faunet import mc_faunet_model
 from tensorflow.keras.layers import Dropout
 import tensorflow as tf
 from train4uq import get_parameters
@@ -36,6 +37,8 @@ def compute_entropy(predictive_prob):
 def get_model(model):
     if model == 'swinunet':
         model = mc_swinunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1)
+    elif model == 'faunet':
+        model = mc_faunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1)
     else:
         with open(f'{folder}/{model}.json', 'r') as json_file:
                 model = model_from_json(json_file.read(), custom_objects={"iou_score": sm.metrics.IOUScore(threshold=0.5),
