@@ -342,36 +342,10 @@ def att_r2_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     return model
 
 
+
 ########################################################################################################
 #Montecarlo Recurrent Residual Convolutional Neural Network based on U-Net (MC-R2U-Net)
 def mc_r2_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
-    inputs = Input((img_h,img_w, img_ch))
-    x = inputs
-    depth = 4
-    features = 16
-    skips = []
-    for i in range(depth):
-        x = rec_res_block(x, features, data_format=data_format)
-        skips.append(x)
-        x = MaxPooling2D((2, 2), data_format=data_format)(x)
-        features = features * 2
-    x = rec_res_block(x, features, data_format=data_format)
-
-    for i in reversed(range(depth)):
-        features = features // 2
-        x = up_and_concate(x, skips[i], data_format=data_format)
-        x = rec_res_block(x, features, data_format=data_format)
-
-    conv6 = Conv2D(n_label, (1, 1), padding='same', data_format=data_format)(x)
-    conv6 = MCDropout(0.2)(conv6)
-    conv7 = core.Activation('softmax')(conv6)
-    model = Model(inputs=inputs, outputs=conv7)
-    #model.compile(optimizer=Adam(lr=1e-6), loss=[dice_coef_loss], metrics=['accuracy', dice_coef])
-    return model
-
-########################################################################################################
-#Montecarlo Recurrent Residual Convolutional Neural Network based on U-Net (MC-R2U-Net)
-def mc_r2_unet2(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     inputs = Input((img_h,img_w, img_ch))
     x = inputs
     depth = 4
@@ -387,6 +361,34 @@ def mc_r2_unet2(img_h, img_w, img_ch, n_label, data_format='channels_last'):
     for i in reversed(range(depth)):
         features = features // 2
         x = up_and_concate(x, skips[i], data_format=data_format)
+        x = mc_rec_res_block(x, features, data_format=data_format)
+
+    conv6 = Conv2D(n_label, (1, 1), padding='same', data_format=data_format)(x)
+    conv7 = core.Activation('softmax')(conv6)
+    model = Model(inputs=inputs, outputs=conv7)
+    #model.compile(optimizer=Adam(lr=1e-6), loss=[dice_coef_loss], metrics=['accuracy', dice_coef])
+    return model
+
+########################################################################################################
+#Attention R2U-Net
+def mc_att_r2_unet(img_h, img_w, img_ch, n_label, data_format='channels_last'):
+    inputs = Input((img_h,img_w, img_ch))
+    x = inputs
+    depth = 4
+    features = 16
+    skips = []
+    for i in range(depth):
+        x = mc_rec_res_block(x, features, data_format=data_format)
+        skips.append(x)
+        x = MaxPooling2D((2, 2), data_format=data_format)(x)
+
+        features = features * 2
+
+    x = mc_rec_res_block(x, features, data_format=data_format)
+
+    for i in reversed(range(depth)):
+        features = features // 2
+        x = attention_up_and_concate(x, skips[i], data_format=data_format)
         x = mc_rec_res_block(x, features, data_format=data_format)
 
     conv6 = Conv2D(n_label, (1, 1), padding='same', data_format=data_format)(x)

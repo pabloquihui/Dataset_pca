@@ -12,7 +12,7 @@ import datetime
 from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import requests
-from dp_models.attn_multi_model import r2_unet, mc_att_unet, mc_r2_unet, mc_r2_unet2
+from dp_models.attn_multi_model import r2_unet, mc_att_unet, mc_r2_unet, mc_att_r2_unet
 from dp_models.attn_multi_model import att_unet as att_unet_org
 from dp_models.att_dense_unet import attn_dense_unet, mc_attn_dense_unet
 from dp_models.unet_MC import multi_unet_model as mc_unet_model
@@ -58,8 +58,6 @@ else:
 def get_model(name):
         if name == 'mc_r2unet-1':
             return mc_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
-        elif name == 'mc_r2unet-2':
-            return mc_r2_unet2(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
         elif name == 'mc_swinunet':
             return mc_swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         
