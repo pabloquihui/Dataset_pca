@@ -3,6 +3,7 @@ import json
 from tensorflow.keras.models import load_model, model_from_json
 import segmentation_models as sm
 from dp_models.mcdropout import MCDropout
+from dp_models.mc_swinunet import mc_swinunet_model
 from tensorflow.keras.layers import Dropout
 import tensorflow as tf
 from train4test import get_parameters
@@ -12,7 +13,7 @@ import pandas as pd
 import os
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
-folder = 'Uncertainty_comparison/models_files'
+folder = 'Uncertainty_comparison_12-04/models'
 test = tf.data.Dataset.load('split_tensor/test_ds/')
 test_len = test.cardinality().numpy()                                           
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
@@ -33,6 +34,8 @@ def compute_entropy(predictive_prob):
     return entropy_func(predictive_prob)
 
 def get_model(model):
+    if model == 'swinunet':
+        model = mc_swinunet_model()
     with open(f'{folder}/{model}.json', 'r') as json_file:
             model = model_from_json(json_file.read(), custom_objects={"iou_score": sm.metrics.IOUScore(threshold=0.5),
                                                                 "f1-score": sm.metrics.FScore(threshold=0.5), 
@@ -119,12 +122,12 @@ def main():
     preds_models = np.array(preds_models)
     entropy_models = np.array(entropy_models)
     prueba_entropia = np.array(prueba_entropia)                     #TODO
-    np.save('Uncertainty_comparison/preds_models', preds_models)
-    np.save('Uncertainty_comparison/entropy_models', entropy_models)
-    np.save('Uncertainty_comparison/prueba_entropia', prueba_entropia)  #TODO
+    np.save(f'{folder}/preds_models', preds_models)
+    np.save(f'{folder}/entropy_models', entropy_models)
+    np.save(f'{folder}/prueba_entropia', prueba_entropia)  #TODO
     print('-------------Evaluating--------------')
     print(df_final)
-    df_final.to_csv('Uncertainty_comparison/uq.csv')
+    df_final.to_csv(f'{folder}/uq.csv')
 
 if __name__ == "__main__":
     print ("Executing program")
