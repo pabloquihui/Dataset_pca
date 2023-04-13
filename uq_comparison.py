@@ -35,11 +35,12 @@ def compute_entropy(predictive_prob):
 
 def get_model(model):
     if model == 'swinunet':
-        model = mc_swinunet_model()
-    with open(f'{folder}/{model}.json', 'r') as json_file:
-            model = model_from_json(json_file.read(), custom_objects={"iou_score": sm.metrics.IOUScore(threshold=0.5),
-                                                                "f1-score": sm.metrics.FScore(threshold=0.5), 
-                                                                "MCDropout": MCDropout(Dropout)})
+        model = mc_swinunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1)
+    else:
+        with open(f'{folder}/{model}.json', 'r') as json_file:
+                model = model_from_json(json_file.read(), custom_objects={"iou_score": sm.metrics.IOUScore(threshold=0.5),
+                                                                    "f1-score": sm.metrics.FScore(threshold=0.5), 
+                                                                    "MCDropout": MCDropout(Dropout)})
     return model
 
 def get_eval_pred(model_obj, model_name):
