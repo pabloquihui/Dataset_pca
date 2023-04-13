@@ -6,7 +6,7 @@ from dp_models.mcdropout import MCDropout
 from dp_models.mc_swinunet import mc_swinunet_model
 from tensorflow.keras.layers import Dropout
 import tensorflow as tf
-from train4validation import get_parameters
+from train4uq import get_parameters
 import numpy as np
 from data_augmentation import preprocess
 import pandas as pd
