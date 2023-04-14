@@ -3,6 +3,7 @@
 ### Without Validation set (after kfold validation)
 ########################################
 import os
+import traceback
 # from keras_unet_collection import models, utils
 import tensorflow as tf
 import keras
@@ -12,24 +13,22 @@ import datetime
 from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import requests
-from dp_models.attn_multi_model import r2_unet, mc_att_unet, mc_att_r2_unet, mc_r2_unet
+from dp_models.attn_multi_model import r2_unet, mc_att_unet, att_r2_unet
+from dp_models.attn_multi_model import mc_att_r2_unet, mc_r2_unet
 from dp_models.attn_multi_model import att_unet as att_unet_org
 from dp_models.att_dense_unet import attn_dense_unet, mc_attn_dense_unet
 from dp_models.unet_MC import multi_unet_model as mc_unet_model
 from dp_models.unet import unet_model
 from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 # from dp_models.att_fpa import att_unet
-from dp_models.faunet_ import fa_unet_model
+from dp_models.mc_swinunet import mc_swinunet_model
 from dp_models.mc_faunet import mc_faunet_model
+from dp_models.faunet_ import fa_unet_model
 from dp_models.faunet import faunet
 from dp_models.att_unet import attention_unet_model, mc_attention_unet_model
 from dp_models.swinunet import swinunet_model
-from dp_models.mc_swinunet import mc_swinunet_model
-import tensorflow_addons as tfa
+
 from data_augmentation import augment, preprocess
-import wandb
-from wandb.keras import WandbCallback
-import traceback
 # Notifications config:
 url_notif = 'https://api.pushcut.io/nijldnK5Ud5uQXRJI0v_G/notifications/Training%20ended'
 
@@ -82,91 +81,36 @@ def get_model(name):
         elif name == 'swinunet':
             return mc_swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'faunet':
-            return mc_faunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
-
-# model_names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'mc_swinunet', 'faunet'])
-model_names = np.array(['att_r2unet'])
+            return fa_unet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
 
 def main(train):
     tf.keras.backend.clear_session()
     EPOCHS, optim, lossfn, metrics = get_parameters()
     train_ds = train.cache()
 
-    aug = get_augmentation()
-    if aug == 'Aug':
-        counter = tf.data.experimental.Counter()
-        train_ds = tf.data.Dataset.zip((train_ds, (counter, counter)))
-        train_ds = (
-                    train_ds
-                    .shuffle(1000)
-                    .map(augment, num_parallel_calls=AUTOTUNE)
-                    .batch(BATCH_SIZE)
-                    )
-    else:
-        train_ds = train_ds.shuffle(1000).batch(BATCH_SIZE)
+    # aug = get_augmentation()
+    
+    train_ds = train_ds.shuffle(1000).batch(BATCH_SIZE)
     
     
 
-    # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet'])
-    
-    folder = 'Uncertainty_comparison_12-04'
-    if not os.path.exists(folder):
-            os.makedirs(folder)
+    names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
 
-    scores_metrics = []
-    for model_name in model_names:
-        run = wandb.init(reinit=True, entity='cv_inside', project='Prostate_Ablation', name=f'{model_name}_{aug}_final')
+
+    num_params = []
+    for model_name in names:
+        tf.random.set_seed(42)
+        
         model = get_model(model_name)
         model.compile(loss=lossfn, optimizer=optim, metrics = metrics)
-    
-        # Callbacks
-        wandb_callback = WandbCallback(
-                                        monitor='val_loss',
-                                        mode='min',
-                                        save_model=False,
-                                        save_weights_only=False
-                                        )
+
+        # count the number of trainable parameters and append to the list
         
-        callbacks= [wandb_callback]
-
-        #Training
-        history = model.fit(
-            train_ds, 
-            epochs=EPOCHS, 
-            callbacks=callbacks,
-            )
-
-        scores = model.evaluate(test, verbose=0)
-        scores_metrics.append(scores)
-        print(f'Scores for test set: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]};      {model.metrics_names[2]} of {scores[2]}')
-
-
-        # serialize model to json
-        current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
-        try:
-            model.save_weights(f'{folder}/{model_name}_weights_{current_time}.h5')
-            json_model = model.to_json()#save the model architecture to JSON file
-            with open(f'{folder}/{model_name}_{current_time}.json', 'w') as json_file:
-                json_file.write(json_model)
-        except Exception:
-            traceback.print_exc()
-
-        #Save Model
-        print('trying save 2')
-        try:
-            model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
-            model.save(f'{folder}/{model_name}_{current_time}.h5')
-        except Exception:
-            traceback.print_exc()
-        run.finish()
-        np.save(f'{folder}/segmentation_comparison', scores_metrics)
-    
-        df = pd.DataFrame(scores_metrics)
-        df.to_csv(f'{folder}/seg_comparison.csv')
-
-        run.finish()
-    np.save('Uncertainty_comparison', scores_metrics)
-    
+        temp = {'Model': model_name, 'Number of parameters': model.count_params()}
+        num_params.append(temp)
+    df = pd.DataFrame(num_params)
+    # df.to_latex('parameters.tex')
+    print(df)
     return 
 
 if __name__ == "__main__":
@@ -174,6 +118,5 @@ if __name__ == "__main__":
     main(train)
 ### Send notification to iPhone ###
     notif = requests.post(url=url_notif)
-
 
 

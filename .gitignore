@@ -17,3 +17,7 @@ uq_boxplot.png
 uq.png
 Uncertainty_comparison_12-04/uq_boxplot_only_all.png
 Uncertainty_comparison_12-04/uq_boxplot_without_all.png
+parameters.tex
+Uncertainty_comparison_12-04/data_final_entropy/entropy_models.npy
+Uncertainty_comparison_12-04/data_final_entropy/preds_models.npy
+Uncertainty_comparison_12-04/data_final_entropy/uq_performance_metrics.csv
