@@ -65,10 +65,16 @@ def get_eval_pred(model_obj, model_name):
     mean_loss = np.mean(losses)
     mean_iou = np.mean(ious)
     mean_f1 = np.mean(f1s)
+    std_loss = np.std(losses)
+    std_iou = np.std(ious)
+    std_f1 = np.std(f1s)
     df = pd.DataFrame({"model": [model_name],
                                 "iou":[mean_iou],
                                 "f1":[mean_f1],
-                                "loss":[mean_loss]})
+                                "loss":[mean_loss],
+                                "std loss":[std_loss],
+                                "std iou":[std_iou],
+                                "std f1":[std_f1]})
     return df, predictive_prob_total
 
 
@@ -125,13 +131,13 @@ def main():
 
     preds_models = np.array(preds_models)
     entropy_models = np.array(entropy_models)
-    prueba_entropia = np.array(prueba_entropia)                     #TODO
+    # prueba_entropia = np.array(prueba_entropia)                     #TODO
     np.save(f'{folder}/preds_models', preds_models)
     np.save(f'{folder}/entropy_models', entropy_models)
-    np.save(f'{folder}/prueba_entropia', prueba_entropia)  #TODO
+    # np.save(f'{folder}/prueba_entropia', prueba_entropia)  #TODO
     print('-------------Evaluating--------------')
     print(df_final)
-    df_final.to_csv(f'{folder}/uq.csv')
+    df_final.to_csv(f'{folder}/uq_performance_metrics.csv')
 
 if __name__ == "__main__":
     print ("Executing program")
