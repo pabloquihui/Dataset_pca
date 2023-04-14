@@ -132,12 +132,12 @@ def main():
     preds_models = np.array(preds_models)
     entropy_models = np.array(entropy_models)
     # prueba_entropia = np.array(prueba_entropia)                     #TODO
-    np.save(f'{folder}/preds_models', preds_models)
-    np.save(f'{folder}/entropy_models', entropy_models)
+    np.save(f'{folder}/preds_models_f', preds_models)
+    np.save(f'{folder}/entropy_models_f', entropy_models)
     # np.save(f'{folder}/prueba_entropia', prueba_entropia)  #TODO
     print('-------------Evaluating--------------')
     print(df_final)
-    df_final.to_csv(f'{folder}/uq_performance_metrics.csv')
+    df_final.to_csv(f'{folder}/uq_performance_metrics_f.csv')
 
 if __name__ == "__main__":
     print ("Executing program")
