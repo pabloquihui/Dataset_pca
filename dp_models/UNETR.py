@@ -13,7 +13,7 @@ def UNETR_2D(
             projection_dim = 128,
             transformer_layers = 12,
             num_heads = 8,
-            transformer_units = [512], 
+            transformer_units = [512, 128], 
             data_augmentation = None,
             num_filters = 16,
             num_classes = 5,
