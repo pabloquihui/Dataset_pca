@@ -9,11 +9,11 @@ from dp_models.modules_unetr import *
 
 def UNETR_2D(
             input_shape = [256, 256, 1],
-            patch_size = 16,
-            projection_dim = 256,
+            patch_size = 4,
+            projection_dim = 128,
             transformer_layers = 12,
-            num_heads = 12,
-            transformer_units = [1024, 256], 
+            num_heads = 8,
+            transformer_units = [512], 
             data_augmentation = None,
             num_filters = 16,
             num_classes = 5,
@@ -70,7 +70,6 @@ def UNETR_2D(
 
     inputs = layers.Input(shape=input_shape)
     num_patches = (input_shape[0]**2)//(patch_size**2)
-    print(num_patches)
     # Augment data.
     augmented = data_augmentation(inputs) if data_augmentation != None else inputs
     # Create patches.
