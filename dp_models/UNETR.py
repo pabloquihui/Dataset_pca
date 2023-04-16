@@ -9,7 +9,7 @@ from dp_models.modules_unetr import *
 
 def UNETR_2D(
             input_shape = [256, 256, 1],
-            patch_size = 8,
+            patch_size = 4,
             projection_dim = 128,
             transformer_layers = 12,
             num_heads = 12,
