@@ -49,11 +49,13 @@ train = train.map(preprocess, num_parallel_calls=AUTOTUNE)
 # test = test.cache()
 # test = test.batch(BATCH_SIZE)
 
-if input('Do you want to apply data augmentation?(yes or no) ') == 'yes':
-    aug = 'Aug'
+# if input('Do you want to apply data augmentation?(yes or no) ') == 'yes':
+#     aug = 'Aug'
 
-else:
-    aug = 'Orig'
+# else:
+#     aug = 'Orig'
+
+aug = 'Orig'
 
 
 def get_model(name):
@@ -64,7 +66,7 @@ def get_model(name):
         elif name == 'unetr':
             return UNETR_2D(input_shape=[IMG_H, IMG_W, IMG_CH], num_classes=N_CLASSES)
         
-model_names = ['unetr', 'swinunet']
+model_names = ['swinunet', 'unetr']
 
 def main(train, parameters):
     IMG_W = parameters[0]
@@ -75,7 +77,7 @@ def main(train, parameters):
     BATCH_SIZE = 6
     LR = 0.0001
     EPOCHS = 300
-    optim = keras.optimizers.Adam(LR)
+    optim = keras.optimizers.Adam(LR, clipvalue=0.5)
     lossfn = keras.losses.categorical_crossentropy
     metrics = [
             sm.metrics.IOUScore(threshold=0.5),
