@@ -23,3 +23,5 @@ Uncertainty_comparison_12-04/data_final_entropy/preds_models.npy
 Uncertainty_comparison_12-04/data_final_entropy/uq_performance_metrics.csv
 Uncertainty_comparison_12-04/attr2unet.json
 Uncertainty_comparison_12-04/attr2unet.h5
+Uncertainty_comparison_12-04/data_final_entropy/entropy_models_f.npy
+Uncertainty_comparison_12-04/data_final_entropy/uq_performance_metrics_f.csv

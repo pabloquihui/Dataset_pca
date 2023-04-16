@@ -21,6 +21,7 @@ from dp_models.Dense_UNet import mc_dense_unet, dense_unet
 from dp_models.att_unet import attention_unet_model
 from dp_models.swinunet import swinunet_model
 from dp_models.mc_swinunet import mc_swinunet_model
+from dp_models.UNETR import UNETR_2D
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
 from dp_models.faunet_ import fa_unet_model
@@ -58,10 +59,12 @@ else:
 def get_model(name):
         if name == 'mc_r2unet-1':
             return mc_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
-        elif name == 'mc_swinunet':
-            return mc_swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        elif name == 'swinunet':
+            return swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+        elif name == 'unetr':
+            return UNETR_2D(input_shape=[IMG_h, IMG_W, IMG_CH], num_classes=N_CLASSES)
         
-model_names = ['mc_swinunet']
+model_names = ['unetr', 'swinunet']
 
 def main(train, parameters):
     IMG_W = parameters[0]
@@ -153,10 +156,10 @@ def main(train, parameters):
     #         model.save_weights(f'{folder}/{name}_{i+1}.h5')
             run.finish()
         scores_final = np.array(scores_final)
-        np.save(f'{folder}/{model_name}_{k}', scores_final)
+        # np.save(f'{folder}/{model_name}_{k}', scores_final)
         df = pd.DataFrame(scores_final, columns=['loss', 'iou', 'f1'])
         print(df)
-        df.to_csv(f'{folder}/mc_comparison_{model_name}.csv')
+        df.to_csv(f'{folder}/transformer_comparison_{model_name}.csv')
     return 
 
 if __name__ == "__main__":
