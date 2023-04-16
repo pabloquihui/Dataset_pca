@@ -4,8 +4,8 @@
 
 from math import log2
 from tensorflow.keras import Model, layers
-# from dp_models.modules_unetr import *
-from modules_unetr import *
+from dp_models.modules_unetr import *
+# from modules_unetr import *
 
 def UNETR_2D(
             input_shape = [256, 256, 1],
