@@ -62,7 +62,7 @@ def get_model(name):
         elif name == 'swinunet':
             return swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'unetr':
-            return UNETR_2D(input_shape=[IMG_h, IMG_W, IMG_CH], num_classes=N_CLASSES)
+            return UNETR_2D(input_shape=[IMG_H, IMG_W, IMG_CH], num_classes=N_CLASSES)
         
 model_names = ['unetr', 'swinunet']
 
