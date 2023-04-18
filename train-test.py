@@ -44,6 +44,8 @@ train = train.map(preprocess, num_parallel_calls=AUTOTUNE)
 
 test = tf.data.Dataset.load(main+'/split_tensor/test_ds/')
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
+print(len(train))
+print(len(test))
 test = test.cache()
 test = test.batch(BATCH_SIZE)
 def get_parameters():
@@ -105,7 +107,7 @@ def main(train):
 #     names = np.array(['unet', 'faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
-    folder = f'Segmentation_thesis_15%_batch{BATCH_SIZE}'
+    folder = f'Segmentation_thesis_{BATCH_SIZE}'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -160,7 +162,7 @@ def main(train):
     np.save(f'{folder}/segmentation_comparison', scores_metrics)
     
     df = pd.DataFrame(scores_metrics)
-    df.to_csv(f'{folder}/seg_comparison_15%.csv')
+    df.to_csv(f'{folder}/seg_comparison.csv')
     return 
 
 if __name__ == "__main__":
