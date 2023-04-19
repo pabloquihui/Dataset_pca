@@ -34,3 +34,5 @@ faunet_check.py
 faunet_check.ipynb
 faunet/faunet2.h5
 model_comparison/preds_models_f2.npy
+model_comparison/preds_models_f3.npy
+wandb/

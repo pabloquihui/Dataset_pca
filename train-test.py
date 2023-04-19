@@ -108,6 +108,7 @@ def main(train):
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
     folder = f'Segmentation_thesis_{BATCH_SIZE}'
+    # folder = 'Faunet_check'
     if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -142,7 +143,7 @@ def main(train):
         print(f'Scores for test set: {model.metrics_names[0]} of {scores[0]}; {model.metrics_names[1]} of {scores[1]};      {model.metrics_names[2]} of {scores[2]}')
 
         # serialize model to json
-        current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
+        
         try:
             model.save_weights(f'{folder}/{model_name}.h5')
             json_model = model.to_json()#save the model architecture to JSON file
@@ -152,16 +153,17 @@ def main(train):
             traceback.print_exc()
 
         #Save Model
-        print('trying save 2')
+        
         # try:
         #     model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
         #     model.save(f'{folder}/{model_name}_{current_time}.h5')
         # except Exception:
         #     traceback.print_exc()
         run.finish()
-    np.save(f'{folder}/segmentation_comparison', scores_metrics)
+    # np.save(f'{folder}/segmentation_comparison', scores_metrics)
     
     df = pd.DataFrame(scores_metrics)
+    print(df)
     df.to_csv(f'{folder}/seg_comparison.csv')
     return 
 
