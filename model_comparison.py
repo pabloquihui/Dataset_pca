@@ -2,7 +2,6 @@ from tqdm import tqdm
 import json
 from tensorflow.keras.models import load_model, model_from_json
 import segmentation_models as sm
-from dp_models.mcdropout import MCDropout
 from dp_models.mc_swinunet import mc_swinunet_model
 from dp_models.mc_faunet import mc_faunet_model
 from tensorflow.keras.layers import Dropout
@@ -14,7 +13,8 @@ import pandas as pd
 import os
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
-folder = 'Segmentation_thesis_6/models'
+# folder = 'Segmentation_thesis_6/models'
+folder = 'faunet'
 test = tf.data.Dataset.load('split_tensor/test_ds/')
 test_len = test.cardinality().numpy()                                           
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
@@ -95,11 +95,11 @@ def main():
 
     preds_models = np.array(preds_models)
 
-    np.save(f'{folder}/preds_models_f', preds_models)
+    # np.save(f'{folder}/preds_models_f', preds_models)
 
     print('-------------Evaluating--------------')
     print(df_final)
-    df_final.to_csv(f'{folder}/performance_metrics_f.csv')
+    # df_final.to_csv(f'{folder}/performance_metrics_f.csv')
 
 if __name__ == "__main__":
     print ("Executing program")

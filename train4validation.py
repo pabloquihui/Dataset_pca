@@ -25,6 +25,7 @@ from dp_models.UNETR import UNETR_2D
 import tensorflow_addons as tfa
 from data_augmentation import augment, preprocess
 from dp_models.faunet_ import fa_unet_model
+from dp_models.mc_faunet import mc_faunet_model
 import wandb
 from wandb.keras import WandbCallback
 # Notifications config:
@@ -62,11 +63,13 @@ def get_model(name):
         if name == 'mc_r2unet-1':
             return mc_r2_unet(img_h = IMG_H, img_w= IMG_W, img_ch=IMG_CH, n_label=N_CLASSES)
         elif name == 'swinunet':
-            return swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
+            return mc_swinunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         elif name == 'unetr':
             return UNETR_2D(input_shape=[IMG_H, IMG_W, IMG_CH], num_classes=N_CLASSES)
+        elif name == 'faunet':
+            return mc_faunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
         
-model_names = ['swinunet', 'unetr']
+model_names = ['swinunet', 'faunet']
 
 def main(train, parameters):
     IMG_W = parameters[0]

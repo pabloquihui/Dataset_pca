@@ -104,7 +104,7 @@ def main(train):
     
 
     # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
-    names = np.array(['faunet', 'swinunet'])
+    names = np.array(['faunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
     folder = f'Segmentation_thesis_{BATCH_SIZE}'

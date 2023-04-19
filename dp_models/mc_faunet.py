@@ -84,49 +84,58 @@ def mc_faunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
 
     # Contraction path
     c1 = Conv2D(16, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(s)
+    c1 = MCDropout(0.1)(c1)
     c1 = Conv2D(16, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c1)
     p1 = MaxPooling2D((2, 2))(c1)
-    p1 = MCDropout(0.1)(p1)
+    
 
     c2 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(p1)
+    c2 = MCDropout(0.1)(c2)
     c2 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c2)
     p2 = MaxPooling2D((2, 2))(c2)
-    p2 = MCDropout(0.1)(p2)
+    # p2 = MCDropout(0.1)(p2)
 
     c3 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(p2)
+    c3 = MCDropout(0.2)(c3)
     c3 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c3)
     p3 = MaxPooling2D((2, 2))(c3)
-    p3 = MCDropout(0.2)(p3)
+    # p3 = MCDropout(0.2)(p3)
 
     c4 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(p3)
+    c4 = MCDropout(0.2)(c4)
     c4 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c4)
     p4 = MaxPooling2D(pool_size=(2, 2))(c4)
-    p4 = MCDropout(0.2)(p4)
+    # p4 = MCDropout(0.2)(p4)
 
     c5 = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(p4)
-    c5 = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c5)
     c5 = MCDropout(0.3)(c5)
+    c5 = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c5)
+    # c5 = MCDropout(0.3)(c5)
 
     # Expansive path
     u6 = attention_up_and_concate(c5, c4)
     c6 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u6)
-    c6 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c6)
     c6 = MCDropout(0.2)(c6)
+    c6 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c6)
+    # c6 = MCDropout(0.2)(c6)
 
     u7 = attention_up_and_concate(c6, c3)
     c7 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u7)
-    c7 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c7)
     c7 = MCDropout(0.2)(c7)
+    c7 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c7)
+    # c7 = MCDropout(0.2)(c7)
 
     u8 = attention_up_and_concate(c7, c2)
     c8 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u8)
-    c8 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c8)
     c8 = MCDropout(0.1)(c8)
+    c8 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c8)
+    # c8 = MCDropout(0.1)(c8)
 
     u9 = attention_up_and_concate_fpa(c8, c1)
     c9 = Conv2D(16, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u9)
-    c9 = Conv2D(16, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c9)
     c9 = MCDropout(0.1)(c9)
+    c9 = Conv2D(16, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c9)
+    # c9 = MCDropout(0.1)(c9)
 
     outputs = Conv2D(n_classes, (1, 1), activation='softmax')(c9)
     model = Model(inputs=[inputs], outputs=[outputs])

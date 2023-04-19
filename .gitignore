@@ -26,3 +26,8 @@ Uncertainty_comparison_12-04/attr2unet.h5
 Uncertainty_comparison_12-04/data_final_entropy/entropy_models_f.npy
 Uncertainty_comparison_12-04/data_final_entropy/uq_performance_metrics_f.csv
 model_comparison/preds_models_f.npy
+faunet/faunet.json
+.gitignore
+preds_models_f.npy
+faunet/faunet.h5
+faunet_check.py
