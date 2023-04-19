@@ -14,6 +14,7 @@ import os
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 folder = 'Segmentation_thesis_6/models'
+output_folder = 'Segmentation_thesis_6'
 # folder = 'faunet'
 test = tf.data.Dataset.load('split_tensor/test_ds/')
 test_len = test.cardinality().numpy()                                           
@@ -95,11 +96,11 @@ def main():
 
     preds_models = np.array(preds_models)
 
-    # np.save(f'{folder}/preds_models_f', preds_models)
+    np.save(f'{output_folder}/preds_models_f', preds_models)
 
     print('-------------Evaluating--------------')
     print(df_final)
-    # df_final.to_csv(f'{folder}/performance_metrics_f.csv')
+    df_final.to_csv(f'{output_folder}/performance_metrics_f.csv')
 
 if __name__ == "__main__":
     print ("Executing program")
