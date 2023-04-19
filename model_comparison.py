@@ -17,6 +17,8 @@ import os
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 folder = 'Segmentation_thesis_6/models'
 output_folder = 'comparison_models_final'
+if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
 # output_folder = 'faunet'
 # folder = 'faunet'
 test = tf.data.Dataset.load('split_tensor/test_ds/')

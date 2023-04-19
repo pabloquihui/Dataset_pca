@@ -44,8 +44,6 @@ train = train.map(preprocess, num_parallel_calls=AUTOTUNE)
 
 test = tf.data.Dataset.load(main+'/split_tensor/test_ds/')
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
-print(len(train))
-print(len(test))
 test = test.cache()
 test = test.batch(BATCH_SIZE)
 def get_parameters():
