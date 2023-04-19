@@ -13,8 +13,8 @@ import pandas as pd
 import os
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
-# folder = 'Segmentation_thesis_6/models'
-folder = 'faunet'
+folder = 'Segmentation_thesis_6/models'
+# folder = 'faunet'
 test = tf.data.Dataset.load('split_tensor/test_ds/')
 test_len = test.cardinality().numpy()                                           
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)

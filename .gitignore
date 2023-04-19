@@ -31,3 +31,6 @@ faunet/faunet.json
 preds_models_f.npy
 faunet/faunet.h5
 faunet_check.py
+faunet_check.ipynb
+faunet/faunet2.h5
+model_comparison/preds_models_f2.npy
