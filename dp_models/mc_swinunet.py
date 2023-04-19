@@ -109,7 +109,7 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
                                num_mlp=num_mlp, 
                                shift_window=shift_window, 
                                name='{}_swin_down0'.format(name))
-    X = MCDropout(0.2)(X)
+    X = MCDropout(0.1)(X)
     X_skip.append(X)
     
     # Downsampling blocks
@@ -133,7 +133,7 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
                                    num_mlp=num_mlp, 
                                    shift_window=shift_window, 
                                    name='{}_swin_down{}'.format(name, i+1))
-        X = MCDropout(0.2)(X)
+        X = MCDropout(0.1)(X)
         
         # Store tensors for concat
         X_skip.append(X)
@@ -180,7 +180,7 @@ def swin_unet_2d_base(input_tensor, filter_num_begin, depth, stack_num_down, sta
                                    num_mlp=num_mlp, 
                                    shift_window=shift_window, 
                                    name='{}_swin_up{}'.format(name, i))
-        X = MCDropout(0.2)(X)
+        X = MCDropout(0.1)(X)
         
     # The last expanding layer; it produces full-size feature maps based on the patch size
     # !!! <--- "patch_size[0]" is used; it assumes patch_size = (size, size)
