@@ -85,7 +85,7 @@ def get_model(name):
             return mc_faunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
 
 # model_names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'mc_swinunet', 'faunet'])
-model_names = np.array(['att_r2unet'])
+model_names = np.array(['mc_swinunet'])
 
 def main(train):
     tf.keras.backend.clear_session()

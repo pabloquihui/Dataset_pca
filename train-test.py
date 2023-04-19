@@ -103,8 +103,8 @@ def main(train):
     
     
 
-    names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
-#     names = np.array(['unet', 'faunet', 'swinunet'])
+    # names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'faunet', 'swinunet'])
+    names = np.array(['faunet', 'swinunet'])
     # names = np.array(['FAUNET'])
 #     names = np.array(['swinunet'])
     folder = f'Segmentation_thesis_{BATCH_SIZE}'
@@ -144,20 +144,20 @@ def main(train):
         # serialize model to json
         current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
         try:
-            model.save_weights(f'{folder}/{model_name}_weights_{current_time}.h5')
+            model.save_weights(f'{folder}/{model_name}.h5')
             json_model = model.to_json()#save the model architecture to JSON file
-            with open(f'{folder}/{model_name}_{current_time}.json', 'w') as json_file:
+            with open(f'{folder}/{model_name}.json', 'w') as json_file:
                 json_file.write(json_model)
         except Exception:
             traceback.print_exc()
 
         #Save Model
         print('trying save 2')
-        try:
-            model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
-            model.save(f'{folder}/{model_name}_{current_time}.h5')
-        except Exception:
-            traceback.print_exc()
+        # try:
+        #     model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
+        #     model.save(f'{folder}/{model_name}_{current_time}.h5')
+        # except Exception:
+        #     traceback.print_exc()
         run.finish()
     np.save(f'{folder}/segmentation_comparison', scores_metrics)
     

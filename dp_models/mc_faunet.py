@@ -108,17 +108,17 @@ def mc_faunet_model(n_classes=5, IMG_HEIGHT=256, IMG_WIDTH=256, IMG_CHANNELS=1):
     c5 = MCDropout(0.3)(c5)
 
     # Expansive path
-    u6 = attention_up_and_concate_fpa(c5, c4)
+    u6 = attention_up_and_concate(c5, c4)
     c6 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u6)
     c6 = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c6)
     c6 = MCDropout(0.2)(c6)
 
-    u7 = attention_up_and_concate_fpa(c6, c3)
+    u7 = attention_up_and_concate(c6, c3)
     c7 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u7)
     c7 = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c7)
     c7 = MCDropout(0.2)(c7)
 
-    u8 = attention_up_and_concate_fpa(c7, c2)
+    u8 = attention_up_and_concate(c7, c2)
     c8 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(u8)
     c8 = Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c8)
     c8 = MCDropout(0.1)(c8)
