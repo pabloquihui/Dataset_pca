@@ -15,6 +15,7 @@ import os
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 folder = 'Uncertainty_comparison_12-04/models'
+output = 'Uncertainty_comparison_12-04/output'
 test = tf.data.Dataset.load('split_tensor/test_ds/')
 test_len = test.cardinality().numpy()                                           
 test = test.map(preprocess, num_parallel_calls=AUTOTUNE)
@@ -132,12 +133,12 @@ def main():
     preds_models = np.array(preds_models)
     entropy_models = np.array(entropy_models)
     # prueba_entropia = np.array(prueba_entropia)                     #TODO
-    np.save(f'{folder}/preds_models_f', preds_models)
-    np.save(f'{folder}/entropy_models_f', entropy_models)
+    np.save(f'{output}/preds_models', preds_models)
+    np.save(f'{output}/entropy_models', entropy_models)
     # np.save(f'{folder}/prueba_entropia', prueba_entropia)  #TODO
     print('-------------Evaluating--------------')
     print(df_final)
-    df_final.to_csv(f'{folder}/uq_performance_metrics_f.csv')
+    df_final.to_csv(f'{output}/uq_performance_metrics.csv')
 
 if __name__ == "__main__":
     print ("Executing program")
