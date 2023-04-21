@@ -85,7 +85,7 @@ def get_model(name):
             return mc_faunet_model(n_classes=N_CLASSES, IMG_HEIGHT=IMG_H, IMG_WIDTH=IMG_W, IMG_CHANNELS=IMG_CH)
 
 # model_names = np.array(['unet', 'att_unet', 'dense_unet', 'att_dense_unet', 'r2unet', 'att_r2unet', 'mc_swinunet', 'faunet'])
-model_names = np.array(['swinunet', 'faunet'])
+model_names = np.array(['faunet'])
 
 def main(train):
     tf.keras.backend.clear_session()
@@ -144,28 +144,28 @@ def main(train):
         # serialize model to json
         current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
         try:
-            model.save_weights(f'{folder}/{model_name}_weights_{current_time}.h5')
+            model.save_weights(f'{folder}/{model_name}.h5')
             json_model = model.to_json()#save the model architecture to JSON file
-            with open(f'{folder}/{model_name}_{current_time}.json', 'w') as json_file:
+            with open(f'{folder}/{model_name}.json', 'w') as json_file:
                 json_file.write(json_model)
         except Exception:
             traceback.print_exc()
 
         #Save Model
-        print('trying save 2')
-        try:
-            model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
-            model.save(f'{folder}/{model_name}_{current_time}.h5')
-        except Exception:
-            traceback.print_exc()
+        # print('trying save 2')
+        # try:
+        #     model.save(os.path.join(wandb.run.dir, f"{model_name}_{current_time}.h5"))
+        #     model.save(f'{folder}/{model_name}_{current_time}.h5')
+        # except Exception:
+        #     traceback.print_exc()
         run.finish()
-        np.save(f'{folder}/segmentation_comparison', scores_metrics)
+        # np.save(f'{folder}/segmentation_comparison', scores_metrics)
     
         df = pd.DataFrame(scores_metrics)
         df.to_csv(f'{folder}/seg_comparison.csv')
 
         run.finish()
-    np.save('Uncertainty_comparison', scores_metrics)
+    # np.save('Uncertainty_comparison', scores_metrics)
     
     return 
 

@@ -36,3 +36,8 @@ faunet/faunet2.h5
 model_comparison/preds_models_f2.npy
 model_comparison/preds_models_f3.npy
 wandb/
+boxplot_iou.png
+.gitignore
+seg_comparisonf.csv
+model_comparison/performance_metrics_f.csv
+preds_original.png
