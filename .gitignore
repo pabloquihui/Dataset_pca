@@ -41,3 +41,4 @@ boxplot_iou.png
 seg_comparisonf.csv
 model_comparison/performance_metrics_f.csv
 preds_original.png
+Uncertainty_comparison/
